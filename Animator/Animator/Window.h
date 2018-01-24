@@ -13,10 +13,11 @@
 #include "Cube.h"
 #include "shader.h"
 
-// Custon
+// Custom
 #include "Tokenizer.h"
 #include "Joint.h"
 #include "Model.h"
+#include "Parser.h"
 
 class Window
 {

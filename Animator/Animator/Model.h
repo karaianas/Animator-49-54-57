@@ -16,7 +16,8 @@ public:
 	glm::mat4 worldM;
 	Joint* root;
 
-	void readFile(const char *file);
+	void readSkel(const char *filepath);
+
 	int setId(Joint* curr, int id);
 	void printAllJoints();
 

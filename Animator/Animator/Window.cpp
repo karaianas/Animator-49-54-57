@@ -46,20 +46,24 @@ glm::mat4 Window::V;
 
 void Window::initialize_objects()
 {
+	// skin file test
+	Parser* P = new Parser();
+	P->readSkin(".//Resources//skin//triangle.skin.txt");
+
 	test = new Model();
-	test->readFile(".//Resources//test.skel.txt");
+	test->readSkel(".//Resources//skel//test.skel.txt");
 	models.push_back(test);
 
 	wasp = new Model();
-	wasp->readFile(".//Resources//wasp.skel.txt");
+	wasp->readSkel(".//Resources//skel//wasp.skel.txt");
 	models.push_back(wasp);
 
 	dragon = new Model();
-	dragon->readFile(".//Resources//dragon.skel.txt");
+	dragon->readSkel(".//Resources//skel//dragon.skel.txt");
 	models.push_back(dragon);
 
 	custom = new Model();
-	custom->readFile(".//Resources//custom.skel.txt");
+	custom->readSkel(".//Resources//skel//custom.skel.txt");
 	models.push_back(custom);
 	
 	modelId = 0;
@@ -69,8 +73,6 @@ void Window::initialize_objects()
 
 	goal = glm::vec3(goalRadius * glm::cos(goalAngle), 4, goalRadius * glm::sin(goalAngle));
 	point = new Cube();
-	//point->color = glm::vec3(0.0f, 1.0f, 0.0f);
-	//point->worldM = glm::translate(glm::mat4(1.0f), goal);
 }
 
 void Window::clean_up()
@@ -146,8 +148,6 @@ void Window::resize_callback(GLFWwindow* window, int width, int height)
 
 void Window::idle_callback()
 {
-	// Call the update function the cube
-	//cube->update();
 	if (IKmode && selectedInd != -1)
 	{
 		//niter++;
@@ -271,13 +271,6 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 			{
 				if (selected)
 				{
-
-					/*glm::vec2 limit = M->getLimit(selectedInd, axis);
-					cout << "axis: " << axis << endl;
-					cout << "selected: " << selectedInd << endl;
-					cout << "limit: " << limit.x << " " << limit.y << endl;
-					cout << selected->localA.x << " " << selected->localA.y << " " << selected->localA.z << endl;*/
-
 					if (mods == GLFW_MOD_SHIFT)
 						M->updateJoint(selectedInd, angleStep, axis);
 					else
@@ -388,15 +381,4 @@ void Window::scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 	float scalefactor = (yoffset > 0) ? 1.1f : 1 / 1.1f;
 	cam_pos = glm::vec3(glm::scale(glm::mat4(1.0f), glm::vec3(scalefactor)) * glm::vec4(cam_pos, 1.0f));
 	V = glm::lookAt(cam_pos, cam_look_at, cam_up);
-
-	//if (!IKmode)
-	//{
-	//	cam_pos = glm::vec3(glm::scale(glm::mat4(1.0f), glm::vec3(scalefactor)) * glm::vec4(cam_pos, 1.0f));
-	//	V = glm::lookAt(cam_pos, cam_look_at, cam_up);
-	//}
-	//else
-	//{
-	//	goal = glm::vec3(glm::scale(glm::mat4(1.0f), glm::vec3(scalefactor)) * glm::vec4(goal, 1.0f));
-	//	niter = 0;
-	//}
 }

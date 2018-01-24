@@ -209,7 +209,7 @@ bool Tokenizer::Reset() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Joint* Tokenizer::read()
+Joint* Tokenizer::readSkel()
 {
 	Joint* J = new Joint();
 	J->parent = nullptr;

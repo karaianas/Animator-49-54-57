@@ -9,11 +9,11 @@ Model::~Model()
 {
 }
 
-void Model::readFile(const char * file)
+void Model::readSkel(const char * filepath)
 {
 	Tokenizer* T = new Tokenizer();
-	T->Open(file);
-	root = T->read();
+	T->Open(filepath);
+	root = T->readSkel();
 
 	// Set independent IDs
 	int counter = 0;
@@ -32,7 +32,6 @@ void Model::readFile(const char * file)
 
 	// Set world matrices
 	calcWorldM(root, worldM);
-	//calcWorldOffM(root, glm::mat4(1.0f));
 
 	// Set scale matrices
 	for (auto joint : allJoints)
@@ -99,7 +98,7 @@ void Model::calcLocalM(int id)
 			(curr->boxmax[1] + curr->boxmin[1]) / 2.0f, \
 			(curr->boxmax[2] + curr->boxmin[2]) / 2.0f));
 
-	curr->offLocalM = ET;// T * R * ET;
+	curr->offLocalM = ET;
 }
 
 void Model::calcWorldM(Joint * curr, glm::mat4 M)
@@ -186,7 +185,6 @@ int Model::IKsolver(int id, glm::vec3 goal)
 		float thres = 0.5f * PI / 180.0f;
 
 		float beta = thres / max(thres, max(max(abs(dAngle[0]), abs(dAngle[1])), abs(dAngle[2])));
-		//cout << "Joint: " << beta << endl;
 
 		glm::vec3 A = dAngle * beta;
 

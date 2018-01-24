@@ -8,6 +8,7 @@ Cube::Cube()
 {
 	worldM = glm::mat4(1.0f);
 
+	// Use normalized cube vertices as normals for now
 	for (int i = 0; i < 8; i++)
 	{
 		normals.push_back(glm::normalize(glm::vec3(vertices[i][0], vertices[i][1], vertices[i][2])));
@@ -53,10 +54,6 @@ Cube::~Cube()
 void Cube::draw(GLuint shaderProgram, glm::mat4 M, glm::vec3 rgb)
 {
 	worldM = M;
-	//color[0] = rgb[0];
-	//color[1] = rgb[1];
-	//color[2] = rgb[2];
-
 	uProjection = glGetUniformLocation(shaderProgram, "projection");
 	uView = glGetUniformLocation(shaderProgram, "view");
 	uModel = glGetUniformLocation(shaderProgram, "model");

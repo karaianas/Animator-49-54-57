@@ -45,7 +45,7 @@ public:
 	int GetLineNum() { return LineNum; }
 
 	// My functions
-	Joint* read();
+	Joint* readSkel();
 	void addChild(Joint* parent, vector<char>* parent_name);
 	void addInfo(Joint* curr);
 	void addVal(Joint* curr, char c, char comp1, char comp2, int ind);
