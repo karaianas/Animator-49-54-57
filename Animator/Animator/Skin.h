@@ -8,4 +8,7 @@ public:
 	Skin();
 	~Skin();
 
+private:
+	vector<glm::vec3> positions;
+	vector<glm::vec3> normals;
 };

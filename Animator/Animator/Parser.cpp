@@ -26,27 +26,58 @@ void Parser::readSkin(const char*filepath)
 		return;
 	}
 
+	glm::vec2 check(-1, 0);
+
 	// Read line by line
 	for (line; getline(file, line);)
 	{
-		// Read word by word
 		istringstream iss(line);
-		do {
-			string word;
-			iss >> word;
-			//cout << temp << endl;
-			if (word == "positions")
-			{
-				string num;
-				iss >> num;
-				processKeyword(iss, word, stoi(num));
-			}
-		} while (iss);
 
+		// Positions and normals
+		if (check[0] == 0 || check[0] == 1)
+		{
+			string p0, p1, p2;
+			iss >> p0;
+			iss >> p1;
+			iss >> p2;
+
+			// Should parse for values here
+			cout << p0 << " " << p1 << " " << p2 << endl;
+			check[1]--;
+			if (check[1] == 0)
+			{
+				check[0] = -1;
+				continue;
+			}
+		}
+		else if (line[0] == '}')
+		{
+			continue;
+		}
+		// Headers
+		else
+		{
+			// Read word by word
+			do {
+				string word, num;
+				iss >> word;
+				iss >> num;
+
+				// Find keywords
+				check = processKeyword(word, stoi(num));
+				if (check[0] != -1)
+					break;
+			} while (iss);
+		}
 	}
 }
 
-void Parser::processKeyword(istringstream & iss, string keyword, int num)
+glm::vec2 Parser::processKeyword(string word, int num)
 {
-	//cout << keyword << num << endl;
+	for (int i = 0; i < skinKeywords.size(); i++)
+	{
+		if (word == skinKeywords[i])
+			return glm::vec2(i, num);
+	}
+	return glm::vec2(-1, 0);
 }

@@ -13,7 +13,11 @@ public:
 	~Parser();
 
 	void readSkin(const char* filepath);
-	void processKeyword(istringstream & iss, string keyword, int num);
+	glm::vec2 processKeyword(string word, int num);
 
 	vector<string> skinKeywords;
+
+	// test
+	vector<glm::vec3> positions;
+	vector<glm::vec3> normals;
 };
