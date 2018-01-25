@@ -3,6 +3,8 @@
 #include "Joint.h"
 #include "Cube.h"
 #include "Tokenizer.h"
+#include "Parser.h"
+#include "Skin.h"
 
 using namespace std;
 
@@ -15,8 +17,10 @@ public:
 	Cube* cube;
 	glm::mat4 worldM;
 	Joint* root;
+	Skin* skin;
 
 	void readSkel(const char *filepath);
+	void readSkin(const char *filepath);
 
 	int setId(Joint* curr, int id);
 	void printAllJoints();

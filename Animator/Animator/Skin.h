@@ -8,7 +8,13 @@ public:
 	Skin();
 	~Skin();
 
-private:
-	vector<glm::vec3> positions;
-	vector<glm::vec3> normals;
+	void print();
+
+	vector<glm::vec3> positions;// vector<Vertex> positions;
+	vector<glm::vec3> normals;// should be part of Vertex
+	vector<vector<int>*> weightInds;
+	vector<vector<float>*> weights;
+	vector<glm::vec3> faces;// vector<Face> faces;
+	vector<glm::mat4> Bmatrices;
+
 };

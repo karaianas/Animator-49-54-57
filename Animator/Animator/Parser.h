@@ -1,5 +1,6 @@
 #pragma once
 #include "Core.h"
+#include "Skin.h"
 
 #include <fstream>
 #include <string>
@@ -12,12 +13,10 @@ public:
 	Parser();
 	~Parser();
 
-	void readSkin(const char* filepath);
+	Skin* readSkin(const char* filepath);
 	glm::vec2 processKeyword(string word, int num);
+	void vec2matConverter(Skin* skin);
 
 	vector<string> skinKeywords;
-
-	// test
-	vector<glm::vec3> positions;
-	vector<glm::vec3> normals;
+	vector<glm::vec3> tempB;
 };

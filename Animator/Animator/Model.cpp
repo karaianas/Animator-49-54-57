@@ -53,6 +53,12 @@ void Model::readSkel(const char * filepath)
 	cube = new Cube();
 }
 
+void Model::readSkin(const char * filepath)
+{
+	Parser* P = new Parser();
+	skin = P->readSkin(filepath);
+}
+
 int Model::setId(Joint * curr, int id)
 {
 	curr->id = id;

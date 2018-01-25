@@ -1,6 +1,6 @@
 #include "window.h"
 
-const char* window_title = "CSE169_Project01";
+const char* window_title = "CSE169_Project02";
 GLint shaderProgram;
 vector<Model*> models;
 int modelId;
@@ -48,7 +48,7 @@ void Window::initialize_objects()
 {
 	// skin file test
 	Parser* P = new Parser();
-	P->readSkin(".//Resources//skin//triangle.skin.txt");
+	P->readSkin(".//Resources//skin//wasp.skin.txt");
 
 	test = new Model();
 	test->readSkel(".//Resources//skel//test.skel.txt");
