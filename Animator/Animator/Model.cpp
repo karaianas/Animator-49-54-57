@@ -57,6 +57,13 @@ void Model::readSkin(const char * filepath)
 {
 	Parser* P = new Parser();
 	skin = P->readSkin(filepath);
+
+	if (allJoints.size() > 0)
+	{
+		skin->setJointsPtr(&allJoints);
+		// test
+		skin->getDeformVertex(0);
+	}
 }
 
 int Model::setId(Joint * curr, int id)

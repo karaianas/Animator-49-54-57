@@ -2,6 +2,7 @@
 #include "Core.h"
 #include "Vertex.h"
 #include "Face.h"
+#include "Joint.h"
 
 using namespace std;
 
@@ -10,15 +11,15 @@ public:
 	Skin();
 	~Skin();
 
+	//void draw();
+	//void update();
+
 	void print();
+	void setJointsPtr(vector<Joint*>* ptr);
+	glm::vec3 getDeformVertex(int id);
 
-	//vector<glm::vec3> positions;// vector<Vertex> positions;
-	//vector<glm::vec3> normals;// should be part of Vertex
+	vector<Joint*>* jointsPtr;
 	vector<Vertex*> vertices;
-	vector<vector<int>*> weightInds;
-	vector<vector<float>*> weights;
-	//vector<glm::vec3> faces;// vector<Face> faces;
 	vector<Face*> faces;
-	vector<glm::mat4> Bmatrices;
-
+	vector<glm::mat4> Bmatrices;// This should be inside Joint?
 };

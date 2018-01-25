@@ -15,4 +15,7 @@ public:
 	int id;
 	glm::vec3 p;
 	glm::vec3 n;
+
+	vector<int> jointId;
+	vector<float> jointW;
 };

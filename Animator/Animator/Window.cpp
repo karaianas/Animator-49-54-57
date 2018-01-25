@@ -47,12 +47,15 @@ glm::mat4 Window::V;
 void Window::initialize_objects()
 {
 	// skin file test
-	Parser* P = new Parser();
-	P->readSkin(".//Resources//skin//wasp.skin.txt");
+	//Parser* P = new Parser();
+	//P->readSkin(".//Resources//skin//triangle.skin.txt");
 
 	test = new Model();
 	test->readSkel(".//Resources//skel//test.skel.txt");
 	models.push_back(test);
+
+	// test
+	test->readSkin(".//Resources//skin//triangle.skin.txt");
 
 	wasp = new Model();
 	wasp->readSkel(".//Resources//skel//wasp.skel.txt");

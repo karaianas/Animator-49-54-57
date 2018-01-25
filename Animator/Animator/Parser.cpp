@@ -32,6 +32,7 @@ Skin* Parser::readSkin(const char*filepath)
 	int vcounter = 0;
 	int ncounter = 0;
 	int fcounter = 0;
+	int wcounter = 0;
 
 	// Read line by line
 	for (line; getline(file, line);)
@@ -51,7 +52,7 @@ Skin* Parser::readSkin(const char*filepath)
 			
 			Vertex* V = new Vertex();
 			V->setIndex(vcounter);
-			V->setPosition(glm::vec3(stoi(p0), stoi(p1), stoi(p2)));
+			V->setPosition(glm::vec3(stof(p0), stof(p1), stof(p2)));
 			skin->vertices.push_back(V);
 			vcounter++;
 
@@ -120,13 +121,17 @@ Skin* Parser::readSkin(const char*filepath)
 			{
 				iss >> index;
 				iss >> weight;
-				weightInds->push_back(stoi(index));
-				weights->push_back(stoi(weight));
+				//weightInds->push_back(stoi(index));
+				//weights->push_back(stoi(weight));
 				//cout << index << " " << weight << endl;
-			}
 
-			skin->weightInds.push_back(weightInds);
-			skin->weights.push_back(weights);
+				skin->vertices[wcounter]->jointId.push_back(stoi(index));
+				skin->vertices[wcounter]->jointW.push_back(stof(weight));
+			}
+			wcounter++;
+			
+			//skin->weightInds.push_back(weightInds);
+			//skin->weights.push_back(weights);
 
 			check[1]--;
 			if (check[1] == 0)
@@ -187,7 +192,6 @@ Skin* Parser::readSkin(const char*filepath)
 
 	vec2matConverter(skin);
 	skin->print();
-
 	cout << "[Read] .skin file successfully read" << endl;
 	return skin;
 }
