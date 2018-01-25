@@ -11,11 +11,14 @@ Skin::~Skin()
 
 void Skin::print()
 {
-	cout << "# positions: " << positions.size() << endl;
-	cout << positions[0].x << " " << positions[1].y << " " << positions[2].z << endl;
+	cout << "# vertices: " << vertices.size() << endl;
+	cout << "# faces: " << faces.size() << endl;
 
-	cout << "# normals: " << normals.size() << endl;
-	cout << normals[0].x << " " << normals[1].y << " " << normals[2].z << endl;
+	//cout << "# positions: " << positions.size() << endl;
+	//cout << positions[0].x << " " << positions[1].y << " " << positions[2].z << endl;
+
+	//cout << "# normals: " << normals.size() << endl;
+	//cout << normals[0].x << " " << normals[1].y << " " << normals[2].z << endl;
 
 	cout << "# wInd: " << weightInds.size() << endl;
 	cout << weightInds[0]->size() << endl;

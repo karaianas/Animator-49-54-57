@@ -113,6 +113,7 @@
   <ItemGroup>
     <ClInclude Include="Core.h" />
     <ClInclude Include="Cube.h" />
+    <ClInclude Include="Face.h" />
     <ClInclude Include="Joint.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="Model.h" />
@@ -120,10 +121,12 @@
     <ClInclude Include="shader.h" />
     <ClInclude Include="Skin.h" />
     <ClInclude Include="Tokenizer.h" />
+    <ClInclude Include="Vertex.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Cube.cpp" />
+    <ClCompile Include="Face.cpp" />
     <ClCompile Include="Joint.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Model.cpp" />
@@ -131,6 +134,7 @@
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="Skin.cpp" />
     <ClCompile Include="Tokenizer.cpp" />
+    <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>

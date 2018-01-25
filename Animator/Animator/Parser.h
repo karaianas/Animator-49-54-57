@@ -1,6 +1,8 @@
 #pragma once
 #include "Core.h"
 #include "Skin.h"
+#include "Vertex.h"
+#include "Face.h"
 
 #include <fstream>
 #include <string>

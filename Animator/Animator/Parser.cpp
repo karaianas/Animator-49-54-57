@@ -29,6 +29,9 @@ Skin* Parser::readSkin(const char*filepath)
 
 	Skin* skin = new Skin();
 	glm::vec2 check(-1, 0);
+	int vcounter = 0;
+	int ncounter = 0;
+	int fcounter = 0;
 
 	// Read line by line
 	for (line; getline(file, line);)
@@ -44,7 +47,13 @@ Skin* Parser::readSkin(const char*filepath)
 			iss >> p2;
 
 			//cout << p0 << " " << p1 << " " << p2 << endl;
-			skin->positions.push_back(glm::vec3(stoi(p0), stoi(p1), stoi(p2)));
+			//skin->positions.push_back(glm::vec3(stoi(p0), stoi(p1), stoi(p2)));
+			
+			Vertex* V = new Vertex();
+			V->setIndex(vcounter);
+			V->setPosition(glm::vec3(stoi(p0), stoi(p1), stoi(p2)));
+			skin->vertices.push_back(V);
+			vcounter++;
 
 			check[1]--;
 			if (check[1] == 0)
@@ -62,7 +71,10 @@ Skin* Parser::readSkin(const char*filepath)
 			iss >> p2;
 
 			//cout << p0 << " " << p1 << " " << p2 << endl;
-			skin->normals.push_back(glm::vec3(stoi(p0), stoi(p1), stoi(p2)));
+			//skin->normals.push_back(glm::vec3(stoi(p0), stoi(p1), stoi(p2)));
+			
+			skin->vertices[ncounter]->setNormal(glm::vec3(stoi(p0), stoi(p1), stoi(p2)));
+			ncounter++;
 
 			check[1]--;
 			if (check[1] == 0)
@@ -80,7 +92,13 @@ Skin* Parser::readSkin(const char*filepath)
 			iss >> p2;
 
 			//cout << p0 << " " << p1 << " " << p2 << endl;
-			skin->faces.push_back(glm::vec3(stoi(p0), stoi(p1), stoi(p2)));
+			//skin->faces.push_back(glm::vec3(stoi(p0), stoi(p1), stoi(p2)));
+
+			Face* F = new Face();
+			F->setIndex(fcounter);
+			F->setVertices(skin->vertices[stoi(p0)], skin->vertices[stoi(p1)], skin->vertices[stoi(p2)]);
+			skin->faces.push_back(F);
+			fcounter++;
 
 			check[1]--;
 			if (check[1] == 0)
@@ -168,7 +186,7 @@ Skin* Parser::readSkin(const char*filepath)
 	}
 
 	vec2matConverter(skin);
-	//skin->print();
+	skin->print();
 
 	cout << "[Read] .skin file successfully read" << endl;
 	return skin;

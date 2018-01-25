@@ -3,6 +3,8 @@
 
 Model::Model()
 {
+	// One instance of cube to draw all joints and bones
+	cube = new Cube();
 }
 
 Model::~Model()
@@ -49,8 +51,6 @@ void Model::readSkel(const char * filepath)
 			joint->localA[i] = val;
 		}
 	}
-
-	cube = new Cube();
 }
 
 void Model::readSkin(const char * filepath)
