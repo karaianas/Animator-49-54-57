@@ -70,10 +70,10 @@ void Window::initialize_objects()
 	*/
 
 	wasp = new Model();
-	wasp->readSkel(".//Resources//skel//wasp.skel.txt");
+	wasp->readSkel(".//Resources//skel//head.skel.txt");
 	cout << "Joint count: " << wasp->allJoints.size() << endl;
 	
-	wasp->readSkin(".//Resources//skin//wasp.skin.txt");
+	wasp->readSkin(".//Resources//skin//head_tex.skin.txt");
 	models.push_back(wasp);
 	
 	modelId = 0;
@@ -187,8 +187,8 @@ void Window::display_callback(GLFWwindow* window)
 	else
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-	glUseProgram(shaderProgram);
-	M->draw(shaderProgram);
+	//glUseProgram(shaderProgram);
+	//M->draw(shaderProgram);
 
 	glUseProgram(skinProgram);
 	M->skin->draw(skinProgram);
@@ -292,12 +292,12 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 					if (mods == GLFW_MOD_SHIFT)
 					{
 						M->updateJoint(selectedInd, angleStep, axis);
-						//M->skin->update();
+						M->skin->update();
 					}
 					else
 					{
 						M->updateJoint(selectedInd, -angleStep, axis);
-						//M->skin->update();
+						M->skin->update();
 					}
 				}
 			}

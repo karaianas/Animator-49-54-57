@@ -61,6 +61,10 @@ void Model::readSkin(const char * filepath)
 	// Initialize
 	if (allJoints.size() > 0)
 		skin->init(&allJoints);
+
+	// Texture test
+	GLuint tmp = skin->loadBMP_custom(".//Resources//textures//head.bmp");
+	//cout << "Texture ID: " << tmp << endl;
 }
 
 int Model::setId(Joint * curr, int id)
