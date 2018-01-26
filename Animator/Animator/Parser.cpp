@@ -48,7 +48,7 @@ Skin* Parser::readSkin(const char*filepath)
 			iss >> p2;
 
 			//cout << p0 << " " << p1 << " " << p2 << endl;
-			//skin->positions.push_back(glm::vec3(stoi(p0), stoi(p1), stoi(p2)));
+			skin->positions.push_back(glm::vec3(stof(p0), stof(p1), stof(p2)));
 			
 			Vertex* V = new Vertex();
 			V->setIndex(vcounter);
@@ -72,7 +72,7 @@ Skin* Parser::readSkin(const char*filepath)
 			iss >> p2;
 
 			//cout << p0 << " " << p1 << " " << p2 << endl;
-			//skin->normals.push_back(glm::vec3(stoi(p0), stoi(p1), stoi(p2)));
+			skin->normals.push_back(glm::vec3(stoi(p0), stoi(p1), stoi(p2)));
 			
 			skin->vertices[ncounter]->setNormal(glm::vec3(stoi(p0), stoi(p1), stoi(p2)));
 			ncounter++;
@@ -93,7 +93,9 @@ Skin* Parser::readSkin(const char*filepath)
 			iss >> p2;
 
 			//cout << p0 << " " << p1 << " " << p2 << endl;
-			//skin->faces.push_back(glm::vec3(stoi(p0), stoi(p1), stoi(p2)));
+			skin->indices.push_back(stoi(p0));
+			skin->indices.push_back(stoi(p1));
+			skin->indices.push_back(stoi(p2));
 
 			Face* F = new Face();
 			F->setIndex(fcounter);

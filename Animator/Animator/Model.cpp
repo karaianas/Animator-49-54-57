@@ -62,7 +62,7 @@ void Model::readSkin(const char * filepath)
 	{
 		skin->setJointsPtr(&allJoints);
 		// test
-		skin->getDeformVertex(0);
+		skin->update();
 	}
 }
 

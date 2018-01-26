@@ -2,6 +2,8 @@
 
 const char* window_title = "CSE169_Project02";
 GLint shaderProgram;
+GLint skinProgram;
+
 vector<Model*> models;
 int modelId;
 Cube* point;
@@ -46,16 +48,13 @@ glm::mat4 Window::V;
 
 void Window::initialize_objects()
 {
-	// skin file test
-	//Parser* P = new Parser();
-	//P->readSkin(".//Resources//skin//triangle.skin.txt");
-
+	/*
 	test = new Model();
 	test->readSkel(".//Resources//skel//test.skel.txt");
 	models.push_back(test);
 
 	// test
-	test->readSkin(".//Resources//skin//triangle.skin.txt");
+	test->readSkin(".//Resources//skin//wasp.skin.txt");
 
 	wasp = new Model();
 	wasp->readSkel(".//Resources//skel//wasp.skel.txt");
@@ -68,12 +67,23 @@ void Window::initialize_objects()
 	custom = new Model();
 	custom->readSkel(".//Resources//skel//custom.skel.txt");
 	models.push_back(custom);
+	*/
+
+	// test
+	//test->readSkin(".//Resources//skin//wasp.skin.txt");
+
+	wasp = new Model();
+	wasp->readSkel(".//Resources//skel//wasp.skel.txt");
+	wasp->readSkin(".//Resources//skin//wasp.skin.txt");
+	models.push_back(wasp);
 	
 	modelId = 0;
-	M = models[modelId];
+	M = wasp;// models[modelId];
 
 	shaderProgram = LoadShaders(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH);
+	skinProgram = LoadShaders(".//Shaders//skin.vert", ".//Shaders//skin.frag");
 
+	// For IK purpose
 	goal = glm::vec3(goalRadius * glm::cos(goalAngle), 4, goalRadius * glm::sin(goalAngle));
 	point = new Cube();
 }
@@ -178,8 +188,12 @@ void Window::display_callback(GLFWwindow* window)
 	else
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-	glUseProgram(shaderProgram);
-	M->draw(shaderProgram);
+	//glUseProgram(shaderProgram);
+	//M->draw(shaderProgram);
+
+	// Test
+	glUseProgram(skinProgram);
+	M->skin->draw(skinProgram);
 
 	glm::mat4 T = glm::translate(glm::mat4(1.0f), goal) * glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.1f));
 	point->draw(shaderProgram, T, glm::vec3(0.0f, 1.0f, 0.0f));
