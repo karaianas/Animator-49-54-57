@@ -72,9 +72,9 @@ Skin* Parser::readSkin(const char*filepath)
 			iss >> p2;
 
 			//cout << p0 << " " << p1 << " " << p2 << endl;
-			skin->normals.push_back(glm::vec3(stoi(p0), stoi(p1), stoi(p2)));
+			skin->normals.push_back(glm::vec3(stof(p0), stof(p1), stof(p2)));
 			
-			skin->vertices[ncounter]->setNormal(glm::vec3(stoi(p0), stoi(p1), stoi(p2)));
+			skin->vertices[ncounter]->setNormal(glm::vec3(stof(p0), stof(p1), stof(p2)));
 			ncounter++;
 
 			check[1]--;
@@ -116,9 +116,9 @@ Skin* Parser::readSkin(const char*filepath)
 			string num, index, weight;
 			iss >> num;
 
-			vector<int>* weightInds = new vector<int>();
-			vector<float>* weights = new vector<float>();
-
+			//vector<int>* weightInds = new vector<int>();
+			//vector<float>* weights = new vector<float>();
+			
 			for (int i = 0; i < 2 * stoi(num); i+=2)
 			{
 				iss >> index;
@@ -130,8 +130,8 @@ Skin* Parser::readSkin(const char*filepath)
 				skin->vertices[wcounter]->jointId.push_back(stoi(index));
 				skin->vertices[wcounter]->jointW.push_back(stof(weight));
 			}
-			wcounter++;
 			
+			wcounter++;
 			//skin->weightInds.push_back(weightInds);
 			//skin->weights.push_back(weights);
 
@@ -162,7 +162,7 @@ Skin* Parser::readSkin(const char*filepath)
 				iss >> r2;
 
 				//cout << r0 << " " << r1 << " " << r2 << endl;
-				tempB.push_back(glm::vec3(stoi(r0), stoi(r1), stoi(r2)));
+				tempB.push_back(glm::vec3(stof(r0), stof(r1), stof(r2)));
 			}
 			
 			if (check[1] == 0)
@@ -220,7 +220,7 @@ void Parser::vec2matConverter(Skin * skin)
 		B[1] = glm::vec4(tempB[i + 1], 0.0f);
 		B[2] = glm::vec4(tempB[i + 2], 0.0f);
 		B[3] = glm::vec4(tempB[i + 3], 1.0f);
-		B = glm::transpose(B);
+		//B = glm::transpose(B);
 		skin->Bmatrices.push_back(B);
 	}
 }

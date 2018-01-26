@@ -36,7 +36,7 @@ glm::vec3 goal;
 #define FRAGMENT_SHADER_PATH "./shader.frag"
 
 // Default camera parameters
-glm::vec3 cam_pos(0.0f, 0.0f, 3.0f);		// e  | Position of camera
+glm::vec3 cam_pos(0.0f, 0.0f, 10.0f);		// e  | Position of camera
 glm::vec3 cam_look_at(0.0f, 0.0f, 0.0f);	// d  | This is where the camera looks at
 glm::vec3 cam_up(0.0f, 1.0f, 0.0f);			// up | What orientation "up" is
 
@@ -69,11 +69,10 @@ void Window::initialize_objects()
 	models.push_back(custom);
 	*/
 
-	// test
-	//test->readSkin(".//Resources//skin//wasp.skin.txt");
-
 	wasp = new Model();
 	wasp->readSkel(".//Resources//skel//wasp.skel.txt");
+	cout << "Joint count: " << wasp->allJoints.size() << endl;
+	
 	wasp->readSkin(".//Resources//skin//wasp.skin.txt");
 	models.push_back(wasp);
 	
@@ -188,15 +187,17 @@ void Window::display_callback(GLFWwindow* window)
 	else
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-	//glUseProgram(shaderProgram);
-	//M->draw(shaderProgram);
+	glUseProgram(shaderProgram);
+	M->draw(shaderProgram);
 
-	// Test
 	glUseProgram(skinProgram);
 	M->skin->draw(skinProgram);
 
-	glm::mat4 T = glm::translate(glm::mat4(1.0f), goal) * glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.1f));
-	point->draw(shaderProgram, T, glm::vec3(0.0f, 1.0f, 0.0f));
+	if(IKmode)
+	{
+		glm::mat4 T = glm::translate(glm::mat4(1.0f), goal) * glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.1f));
+		point->draw(shaderProgram, T, glm::vec3(0.0f, 1.0f, 0.0f));
+	}
 
 	glfwPollEvents();
 	glfwSwapBuffers(window);
@@ -289,9 +290,15 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 				if (selected)
 				{
 					if (mods == GLFW_MOD_SHIFT)
+					{
 						M->updateJoint(selectedInd, angleStep, axis);
+						//M->skin->update();
+					}
 					else
+					{
 						M->updateJoint(selectedInd, -angleStep, axis);
+						//M->skin->update();
+					}
 				}
 			}
 		}

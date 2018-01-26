@@ -58,12 +58,9 @@ void Model::readSkin(const char * filepath)
 	Parser* P = new Parser();
 	skin = P->readSkin(filepath);
 
+	// Initialize
 	if (allJoints.size() > 0)
-	{
-		skin->setJointsPtr(&allJoints);
-		// test
-		skin->update();
-	}
+		skin->init(&allJoints);
 }
 
 int Model::setId(Joint * curr, int id)

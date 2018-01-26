@@ -1,10 +1,25 @@
 #include "Skin.h"
 #include "Window.h"
 
+
 Skin::Skin()
 {
 
 	worldM = glm::mat4(1.0f);
+}
+
+Skin::~Skin()
+{
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &VBO2);
+	glDeleteBuffers(1, &EBO);
+}
+
+void Skin::init(vector<Joint*>* ptr)
+{
+	jointsPtr = ptr;
+	update();
 
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -14,7 +29,7 @@ Skin::Skin()
 	glBindVertexArray(VAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), vertices.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(glm::vec3), positions.data(), GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (GLvoid*)0);
@@ -32,17 +47,8 @@ Skin::Skin()
 	glBindVertexArray(0);
 }
 
-Skin::~Skin()
-{
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
-	glDeleteBuffers(1, &VBO2);
-	glDeleteBuffers(1, &EBO);
-}
-
 void Skin::draw(GLuint shaderProgram)
 {
-	cout << "hey" << endl;
 	uProjection = glGetUniformLocation(shaderProgram, "projection");
 	uView = glGetUniformLocation(shaderProgram, "view");
 	uModel = glGetUniformLocation(shaderProgram, "model");
@@ -52,8 +58,7 @@ void Skin::draw(GLuint shaderProgram)
 	glUniformMatrix4fv(uView, 1, GL_FALSE, &Window::V[0][0]);
 
 	glBindVertexArray(VAO);
-	//glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-	glDrawArrays(GL_POINTS, 0, 50);
+	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 }
 
@@ -74,7 +79,7 @@ void Skin::print()
 	cout << "Test weights: " << vertices[0]->jointId[0] << " " << vertices[0]->jointW[0] << endl;
 
 	cout << "# Bmatrices: " << Bmatrices.size() << endl;
-	cout << Bmatrices[1][0][0] << " " << Bmatrices[1][0][1] << endl;
+	//cout << Bmatrices[1][0][0] << " " << Bmatrices[1][0][1] << endl;
 
 }
 
@@ -101,7 +106,7 @@ glm::vec3 Skin::getDeform(int id, bool normalize)
 	}
 
 
-	if (normalize)
+	if (normalize == 1)
 	{
 		glm::vec3 result = M * glm::vec4(V->n, 0.0f);
 		return glm::normalize(result);

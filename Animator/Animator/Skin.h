@@ -32,6 +32,7 @@ public:
 	GLuint uProjection, uModel, uView;
 	//GLuint uColor;
 	
+	void init(vector<Joint*>* ptr);
 	void draw(GLuint shaderProgram);
 	void update();
 
