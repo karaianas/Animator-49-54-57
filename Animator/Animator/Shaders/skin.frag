@@ -34,7 +34,7 @@ void directional()
 
 	vec3 result = (diff + ambi) * vec3(1.0f, 1.0f, 1.0f);
 
-	color = vec4(result, 1.0f);
-	//color = vec4(N, 1.0f);
+	//color = vec4(result, 1.0f);
+	color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
 	
 }

@@ -4,12 +4,8 @@ const char* window_title = "CSE169_Project02";
 GLint shaderProgram;
 GLint skinProgram;
 
-vector<Model*> models;
-int modelId;
 Cube* point;
 Model* M;
-Joint* selected;
-glm::vec2 prev_pos;
 
 // IK solver
 glm::vec3 goal;
@@ -19,11 +15,17 @@ bool IKmode = false;
 float goalAngle = 0.0f;
 float goalRadius = 7.f;
 
+Joint* selected;
+glm::vec2 prev_pos;
 int selectedInd = -1;
 float angleStep = 0.1f;
 bool rotate_flag_L = false;
 bool rotate_flag_R = false;
 bool locked = false;
+
+bool isSkel = false;
+bool isSkin = true;
+bool isTex = false;
 bool wireframe = false;
 
 // On some systems you need to change this to the absolute path
@@ -31,7 +33,7 @@ bool wireframe = false;
 //#define FRAGMENT_SHADER_PATH "./shader.frag"
 
 // Default camera parameters
-glm::vec3 cam_pos(0.0f, 0.0f, 10.0f);		// e  | Position of camera
+glm::vec3 cam_pos(0.0f, 0.0f, 5.0f);		// e  | Position of camera
 glm::vec3 cam_look_at(0.0f, 0.0f, 0.0f);	// d  | This is where the camera looks at
 glm::vec3 cam_up(0.0f, 1.0f, 0.0f);			// up | What orientation "up" is
 
@@ -166,6 +168,7 @@ void Window::resize_callback(GLFWwindow* window, int width, int height)
 
 void Window::idle_callback()
 {
+	// Should prob update skin here as well
 	if (IKmode && selectedInd != -1)
 	{
 		//niter++;
@@ -193,16 +196,24 @@ void Window::display_callback(GLFWwindow* window)
 	else
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-	glUseProgram(shaderProgram);
-	M->draw(shaderProgram);
-
-	glUseProgram(skinProgram);
-	M->skin->draw(skinProgram);
-
-	if(IKmode)
+	if (isSkel)
 	{
+		glUseProgram(shaderProgram);
+		M->draw(shaderProgram);
+	}
+
+	if (IKmode)
+	{
+		glUseProgram(shaderProgram);
+		//point->draw(shaderProgram, glm::mat4(1.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		glm::mat4 T = glm::translate(glm::mat4(1.0f), goal) * glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.1f));
 		point->draw(shaderProgram, T, glm::vec3(0.0f, 1.0f, 0.0f));
+	}
+
+	if (isSkin)
+	{
+		glUseProgram(skinProgram);
+		M->skin->draw(skinProgram);
 	}
 
 	glfwPollEvents();
@@ -222,6 +233,22 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 		if (key == GLFW_KEY_0)
 		{
 			mainMenu();
+		}
+
+		// What to draw
+		if (key == GLFW_KEY_1)
+		{
+			if (isSkel)
+				isSkel = false;
+			else
+				isSkel = true;
+		}
+		if (key == GLFW_KEY_2)
+		{
+			if (isSkin)
+				isSkin = false;
+			else
+				isSkin = true;
 		}
 
 		if (key == GLFW_KEY_W)
