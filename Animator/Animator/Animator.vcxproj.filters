@@ -88,17 +88,23 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shader.frag">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="shader.vert">
-      <Filter>Source Files</Filter>
-    </None>
     <None Include="packages.config" />
     <None Include="shaders\skin.frag">
       <Filter>Source Files</Filter>
     </None>
     <None Include="shaders\skin.vert">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="Shaders\shader.frag">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="Shaders\shader.vert">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="Shaders\skinTex.frag">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="Shaders\skinTex.vert">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>

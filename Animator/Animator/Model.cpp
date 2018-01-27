@@ -11,7 +11,7 @@ Model::~Model()
 {
 }
 
-void Model::readSkel(const char * filepath)
+Joint* Model::readSkel(const char * filepath)
 {
 	Tokenizer* T = new Tokenizer();
 	T->Open(filepath);
@@ -51,9 +51,12 @@ void Model::readSkel(const char * filepath)
 			joint->localA[i] = val;
 		}
 	}
+	 
+	cout << "Joint size: " << allJoints.size() << endl;
+	return root;
 }
 
-void Model::readSkin(const char * filepath)
+Skin* Model::readSkin(const char * filepath)
 {
 	Parser* P = new Parser();
 	skin = P->readSkin(filepath);
@@ -62,9 +65,7 @@ void Model::readSkin(const char * filepath)
 	if (allJoints.size() > 0)
 		skin->init(&allJoints);
 
-	// Texture test
-	GLuint tmp = skin->loadBMP_custom(".//Resources//textures//head.bmp");
-	//cout << "Texture ID: " << tmp << endl;
+	return skin;
 }
 
 int Model::setId(Joint * curr, int id)

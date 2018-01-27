@@ -5,6 +5,7 @@
 Skin::Skin()
 {
 	worldM = glm::mat4(1.0f);
+	isTex = false;
 }
 
 Skin::~Skin()
@@ -45,23 +46,29 @@ void Skin::init(vector<Joint*>* ptr)
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), GL_STATIC_DRAW);
 
 	// Texture
-	glBindBuffer(GL_ARRAY_BUFFER, VBO2);
-	glBufferData(GL_ARRAY_BUFFER, texcoords.size() * sizeof(glm::vec2), texcoords.data(), GL_STATIC_DRAW);
+	if (isTex)
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, VBO2);
+		glBufferData(GL_ARRAY_BUFFER, texcoords.size() * sizeof(glm::vec2), texcoords.data(), GL_STATIC_DRAW);
 
-	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (GLvoid*)0);
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (GLvoid*)0);
 
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+	}
 }
 
 void Skin::draw(GLuint shaderProgram)
 {
 	// Texture
-	uTexture = glGetUniformLocation(shaderProgram, "textureSampler");
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glUniform1i(uTexture, 0);
+	if (isTex)
+	{
+		uTexture = glGetUniformLocation(shaderProgram, "textureSampler");
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture);
+		glUniform1i(uTexture, 0);
+	}
 
 	uProjection = glGetUniformLocation(shaderProgram, "projection");
 	uView = glGetUniformLocation(shaderProgram, "view");
@@ -150,7 +157,7 @@ glm::vec3 Skin::getDeform(int id, bool normalize)
 	else
 	{
 		glm::vec3 result = M * glm::vec4(V->p, 1.0f);
-		//cout << "p orig: " << V->p[0] << " " << V->p[1] << " " << V->p[2] << endl;
+		//cout << "p : " << result[0] << " " << result[1] << " " << result[2] << endl;
 		return result;
 	}
 }

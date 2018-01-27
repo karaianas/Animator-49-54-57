@@ -8,32 +8,27 @@ vector<Model*> models;
 int modelId;
 Cube* point;
 Model* M;
-Model* test;
-Model* wasp;
-Model* dragon;
-Model* custom;
 Joint* selected;
 glm::vec2 prev_pos;
 
+// IK solver
+glm::vec3 goal;
 int niter = 0;
 int niterLim = 100;
-int selectedInd = -1;
+bool IKmode = false;
 float goalAngle = 0.0f;
 float goalRadius = 7.f;
+
+int selectedInd = -1;
 float angleStep = 0.1f;
 bool rotate_flag_L = false;
 bool rotate_flag_R = false;
 bool locked = false;
 bool wireframe = false;
-bool IKmode = false;
-
-
-//glm::vec3 goal(0.0f, 2.0f, 8.0f);
-glm::vec3 goal;
 
 // On some systems you need to change this to the absolute path
-#define VERTEX_SHADER_PATH "./shader.vert"
-#define FRAGMENT_SHADER_PATH "./shader.frag"
+//#define VERTEX_SHADER_PATH "./shader.vert"
+//#define FRAGMENT_SHADER_PATH "./shader.frag"
 
 // Default camera parameters
 glm::vec3 cam_pos(0.0f, 0.0f, 10.0f);		// e  | Position of camera
@@ -46,41 +41,53 @@ int Window::height;
 glm::mat4 Window::P;
 glm::mat4 Window::V;
 
+void Window::mainMenu()
+{
+	// Test zone
+	cout << endl << "Type in [skeleton] [skin] file names e.g. [head] [head_tex] " << endl;
+	string skelName, skinName;
+	cin >> skelName >> skinName;
+	string skelFilePath = ".//Resources//skel//" + skelName + ".skel.txt";
+	string skinFilePath = ".//Resources//skin//" + skinName + ".skin.txt";
+
+	ifstream file0(skelFilePath);
+	ifstream file1(skinFilePath);
+
+	if (file0 && file1)
+	{
+		delete M;
+		M = new Model();
+		M->readSkel(skelFilePath.c_str());
+		M->readSkin(skinFilePath.c_str());
+		
+		if (M->skin->isTex)
+		{
+			string texFilePath = ".//Resources//textures//" + skelName + ".bmp";
+			M->skin->loadBMP_custom(texFilePath.c_str());
+			skinProgram = LoadShaders(".//Shaders//skinTex.vert", ".//Shaders//skinTex.frag");
+		}
+		else
+			skinProgram = LoadShaders(".//Shaders//skin.vert", ".//Shaders//skin.frag");
+
+		cout << "Opening [" << skelName << ".skel] and [" << skinName << ".skin]" << endl;
+
+	}
+	else
+		cout << "Cannot open input file.\n" << endl;
+
+
+}
+
 void Window::initialize_objects()
 {
-	/*
-	test = new Model();
-	test->readSkel(".//Resources//skel//test.skel.txt");
-	models.push_back(test);
-
-	// test
-	test->readSkin(".//Resources//skin//wasp.skin.txt");
-
-	wasp = new Model();
-	wasp->readSkel(".//Resources//skel//wasp.skel.txt");
-	models.push_back(wasp);
-
-	dragon = new Model();
-	dragon->readSkel(".//Resources//skel//dragon.skel.txt");
-	models.push_back(dragon);
-
-	custom = new Model();
-	custom->readSkel(".//Resources//skel//custom.skel.txt");
-	models.push_back(custom);
-	*/
-
-	wasp = new Model();
-	wasp->readSkel(".//Resources//skel//head.skel.txt");
-	cout << "Joint count: " << wasp->allJoints.size() << endl;
-	
-	wasp->readSkin(".//Resources//skin//head_tex.skin.txt");
-	models.push_back(wasp);
-	
-	modelId = 0;
-	M = wasp;// models[modelId];
-
-	shaderProgram = LoadShaders(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH);
+	shaderProgram = LoadShaders(".//Shaders//shader.vert", ".//Shaders//shader.frag");
 	skinProgram = LoadShaders(".//Shaders//skin.vert", ".//Shaders//skin.frag");
+
+	M = new Model();
+
+	// By default, read in wasp model
+	M->readSkel(".//Resources//skel//wasp.skel.txt");	
+	M->readSkin(".//Resources//skin//wasp.skin.txt");
 
 	// For IK purpose
 	goal = glm::vec3(goalRadius * glm::cos(goalAngle), 4, goalRadius * glm::sin(goalAngle));
@@ -89,8 +96,7 @@ void Window::initialize_objects()
 
 void Window::clean_up()
 {
-	for (auto ptr : models)
-		delete ptr;
+	delete M;
 	glDeleteProgram(shaderProgram);
 }
 
@@ -187,8 +193,8 @@ void Window::display_callback(GLFWwindow* window)
 	else
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-	//glUseProgram(shaderProgram);
-	//M->draw(shaderProgram);
+	glUseProgram(shaderProgram);
+	M->draw(shaderProgram);
 
 	glUseProgram(skinProgram);
 	M->skin->draw(skinProgram);
@@ -210,6 +216,12 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 		if (key == GLFW_KEY_ESCAPE)
 		{
 			glfwSetWindowShouldClose(window, GL_TRUE);
+		}
+
+		// Go to main menu
+		if (key == GLFW_KEY_0)
+		{
+			mainMenu();
 		}
 
 		if (key == GLFW_KEY_W)
@@ -256,23 +268,6 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 				IKmode = true;
 				niter = 0;
 			}
-		}
-
-		if (key == GLFW_KEY_1)
-		{
-			M = models[0];
-		}
-		if (key == GLFW_KEY_2)
-		{
-			M = models[1];
-		}
-		if (key == GLFW_KEY_3)
-		{
-			M = models[2];
-		}
-		if (key == GLFW_KEY_4)
-		{
-			M = models[3];
 		}
 
 		if (rotate_flag_L)

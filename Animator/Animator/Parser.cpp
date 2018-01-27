@@ -11,6 +11,7 @@ Parser::Parser()
 	skinKeywords.push_back("triangles");
 	skinKeywords.push_back("bindings");
 	skinKeywords.push_back("texcoords");
+
 }
 
 Parser::~Parser()
@@ -34,6 +35,7 @@ Skin* Parser::readSkin(const char*filepath)
 	int ncounter = 0;
 	int fcounter = 0;
 	int wcounter = 0;
+	int tcounter = 0;
 
 	// Read line by line
 	for (line; getline(file, line);)
@@ -94,6 +96,7 @@ Skin* Parser::readSkin(const char*filepath)
 
 			//cout << p0 << " " << p1 << " " << endl;
 			skin->texcoords.push_back(glm::vec2(stof(p0), stof(p1)));
+			tcounter++;
 
 			check[1]--;
 			if (check[1] == 0)
@@ -202,10 +205,7 @@ Skin* Parser::readSkin(const char*filepath)
 				iss >> word;
 				iss >> num;
 				if (word == "material" || word == "texture")
-				{
-					//cout << "yay" << word << " " << num << endl;
 					break;
-				}
 
 				// Find keywords
 				check = processKeyword(word, stoi(num));
@@ -216,6 +216,9 @@ Skin* Parser::readSkin(const char*filepath)
 	}
 
 	vec2matConverter(skin);
+
+	if (tcounter > 0)
+		skin-> isTex = true;
 	//skin->print();
 	cout << "[Read] .skin file successfully read" << endl;
 	return skin;

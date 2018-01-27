@@ -19,8 +19,8 @@ public:
 	Joint* root;
 	Skin* skin;
 
-	void readSkel(const char *filepath);
-	void readSkin(const char *filepath);
+	Joint* readSkel(const char *filepath);
+	Skin* readSkin(const char *filepath);
 
 	int setId(Joint* curr, int id);
 	void printAllJoints();

@@ -24,6 +24,7 @@ public:
 	Skin();
 	~Skin();
 
+	bool isTex;
 	glm::mat4 worldM;
 	vector<glm::vec3> positions;
 	vector<glm::vec3> normals;
