@@ -15,6 +15,9 @@ bool IKmode = false;
 float goalAngle = 0.0f;
 float goalRadius = 7.f;
 
+// Morphing
+float phi = 0.0f;
+
 Joint* selected;
 glm::vec2 prev_pos;
 int selectedInd = -1;
@@ -25,7 +28,6 @@ bool locked = false;
 
 bool isSkel = false;
 bool isSkin = true;
-bool isTex = false;
 bool wireframe = false;
 
 // On some systems you need to change this to the absolute path
@@ -46,14 +48,23 @@ glm::mat4 Window::V;
 void Window::mainMenu()
 {
 	// Test zone
-	cout << endl << "Type in [skeleton] [skin] file names e.g. [head] [head_tex] " << endl;
-	string skelName, skinName;
-	cin >> skelName >> skinName;
+	cout << "-----------------------------------------" << endl;
+	cout << endl << "Type in [skeleton] [skin] [morph] [morph] file names" << endl;
+	cout << "If you wish to not load a particular file, write N/A instead" << endl;
+	cout << "e.g.[head] [head_tex] [head1] [N/A]" << endl;
+
+	string skelName, skinName, morph1, morph2;
+	cin >> skelName >> skinName >> morph1 >> morph2;
+
 	string skelFilePath = ".//Resources//skel//" + skelName + ".skel.txt";
 	string skinFilePath = ".//Resources//skin//" + skinName + ".skin.txt";
+	string morph1Path = ".//Resources//skin//" + morph1 + ".morph.txt";
+	string morph2Path = ".//Resources//skin//" + morph2 + ".morph.txt";
 
 	ifstream file0(skelFilePath);
 	ifstream file1(skinFilePath);
+	ifstream file2(morph1Path);
+	ifstream file3(morph2Path);
 
 	if (file0 && file1)
 	{
@@ -62,6 +73,7 @@ void Window::mainMenu()
 		M->readSkel(skelFilePath.c_str());
 		M->readSkin(skinFilePath.c_str());
 		
+		// Texture
 		if (M->skin->isTex)
 		{
 			string texFilePath = ".//Resources//textures//" + skelName + ".bmp";
@@ -71,7 +83,11 @@ void Window::mainMenu()
 		else
 			skinProgram = LoadShaders(".//Shaders//skin.vert", ".//Shaders//skin.frag");
 
-		cout << "Opening [" << skelName << ".skel] and [" << skinName << ".skin]" << endl;
+		// Morphing
+		//if (file2)
+		//	M->readMorph(morph1Path.c_str());
+
+		//cout << "Opening [" << skelName << ".skel] and [" << skinName << ".skin]" << endl;
 
 	}
 	else
@@ -297,6 +313,25 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 			}
 		}
 
+		if (key == GLFW_KEY_M)
+		{
+			if (mods == GLFW_MOD_SHIFT)
+			{
+				phi += 0.1f;
+				M->skin->update(phi);
+			}
+			else
+			{
+				if (phi <= 0)
+					phi = 0;
+				else
+				{
+					phi -= 0.1f;
+					M->skin->update(phi);
+				}
+			}
+		}
+
 		if (rotate_flag_L)
 		{
 			int axis = -1;
@@ -314,12 +349,12 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 					if (mods == GLFW_MOD_SHIFT)
 					{
 						M->updateJoint(selectedInd, angleStep, axis);
-						M->skin->update();
+						M->skin->update(phi);
 					}
 					else
 					{
 						M->updateJoint(selectedInd, -angleStep, axis);
-						M->skin->update();
+						M->skin->update(phi);
 					}
 				}
 			}

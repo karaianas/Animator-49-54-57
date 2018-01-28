@@ -19,9 +19,12 @@ public:
 	Joint* root;
 	Skin* skin;
 
+	// Loading
 	Joint* readSkel(const char *filepath);
 	Skin* readSkin(const char *filepath);
+	void readMorph(const char *filepath);
 
+	// Joint initialization
 	int setId(Joint* curr, int id);
 	void printAllJoints();
 

@@ -20,7 +20,7 @@ Skin::~Skin()
 void Skin::init(vector<Joint*>* ptr)
 {
 	jointsPtr = ptr;
-	update();
+	update(0.0f);
 
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -32,9 +32,11 @@ void Skin::init(vector<Joint*>* ptr)
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(glm::vec3), positions.data(), GL_STATIC_DRAW);
+	//glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (GLvoid*)0);
+	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO2);
 	glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), normals.data(), GL_STATIC_DRAW);
@@ -83,13 +85,14 @@ void Skin::draw(GLuint shaderProgram)
 	glBindVertexArray(0);
 }
 
-void Skin::update()
+void Skin::update(float phi)
 {
 	for (int i = 0; i < vertices.size(); i++)
 	{
-		positions[i] = getDeform2(i, 0);
-		normals[i] = getDeform2(i, 1);
+		positions[i] = getDeform(i, 0, phi);
+		normals[i] = getDeform(i, 1, phi);
 	}
+	cout << phi << endl;
 	glBindVertexArray(VAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -97,6 +100,7 @@ void Skin::update()
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (GLvoid*)0);
+	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO2);
 	glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), normals.data(), GL_STATIC_DRAW);
@@ -128,7 +132,7 @@ void Skin::setJointsPtr(vector<Joint*>* ptr)
 	jointsPtr = ptr;
 }
 
-glm::vec3 Skin::getDeform(int id, bool normalize)
+glm::vec3 Skin::getDeform(int id, bool normalize, float phi)
 {
 	Vertex* V = vertices[id];
 	glm::mat4 M(0.0f);
@@ -142,7 +146,6 @@ glm::vec3 Skin::getDeform(int id, bool normalize)
 		glm::mat4 W = J->worldM;
 		glm::mat4 B = Bmatrices[jointId];
 
-		// Should prob use inverse transform for safety
 		M += w * W * glm::inverse(B);
 		//M += w * W * glm::transpose(glm::inverse(B));
 	}
@@ -150,46 +153,13 @@ glm::vec3 Skin::getDeform(int id, bool normalize)
 
 	if (normalize == 1)
 	{
-		glm::vec3 result = M * glm::vec4(V->n, 0.0f);
+		glm::vec3 result = M * glm::vec4(V->n + phi * V->nDelta, 0.0f);
 		//cout << "n orig: " << result[0] << " " << result[1] << " " << result[2] << endl;
 		return glm::normalize(result);
 	}
 	else
 	{
-		glm::vec3 result = M * glm::vec4(V->p, 1.0f);
-		//cout << "p : " << result[0] << " " << result[1] << " " << result[2] << endl;
-		return result;
-	}
-}
-
-glm::vec3 Skin::getDeform2(int id, bool normalize)
-{
-	Vertex* V = vertices[id];
-	glm::mat4 M(0.0f);
-	glm::vec4 tmp(0.0f, 0.0f, 0.0f, 0.0f);
-
-	for (int i = 0; i < V->jointId.size(); i++)
-	{
-		float w = V->jointW[i];
-		int jointId = V->jointId[i];
-		Joint* J = jointsPtr->at(jointId);
-		glm::mat4 W = J->worldM;
-		glm::mat4 B = Bmatrices[jointId];
-
-		// Should prob use inverse transform for safety
-		M += w * W * glm::inverse(B);
-		//M += w * W * glm::transpose(glm::inverse(B));
-	}
-
-	if (normalize == 1)
-	{
-		glm::vec3 result = M * glm::vec4(V->n + 3.0f * V->nDelta, 0.0f);
-		//cout << "n orig: " << result[0] << " " << result[1] << " " << result[2] << endl;
-		return glm::normalize(result);
-	}
-	else
-	{
-		glm::vec3 result = M * glm::vec4(V->p + 3.0f * V->vDelta, 1.0f);
+		glm::vec3 result = M * glm::vec4(V->p + phi * V->vDelta, 1.0f);
 		//cout << "p : " << result[0] << " " << result[1] << " " << result[2] << endl;
 		return result;
 	}

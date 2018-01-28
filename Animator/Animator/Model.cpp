@@ -67,11 +67,24 @@ Skin* Model::readSkin(const char * filepath)
 
 	// Test zone
 	// Read .morph if available
-
-	//P->readMorph(".//Resources//morph//head1.morph.txt", skin;
-	//skin->update();
+	if (string(filepath) == ".//Resources//skin//head.skin.txt" || string(filepath) == ".//Resources//skin//head_tex.skin.txt")
+	{
+		P->readMorph(".//Resources//morph//head1.morph.txt", skin);
+		skin->update(0.0f);
+	}
 
 	return skin;
+}
+
+void Model::readMorph(const char * filepath)
+{
+	if (skin)
+	{
+		Parser* P = new Parser();
+		P->readMorph(filepath, skin);
+		skin->update(0.0f);
+	}
+
 }
 
 int Model::setId(Joint * curr, int id)

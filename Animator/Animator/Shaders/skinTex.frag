@@ -28,7 +28,7 @@ void directional()
 	vec3 diff = k_d * inProduct * lightColor * texture( textureSampler, T ).rgb;
 
 	// ambient
-	vec3 ambi = vec3(0.2f, 0.2f, 0.2f) * texture( textureSampler, T).rgb;
+	vec3 ambi = vec3(0.3f, 0.3f, 0.3f) * texture( textureSampler, T).rgb;
 
 	// specular
 

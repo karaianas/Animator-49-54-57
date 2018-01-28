@@ -5,6 +5,9 @@ using namespace std;
 
 class Vertex {
 public:
+	glm::vec3 p;
+	glm::vec3 n;
+
 	Vertex();
 	~Vertex();
 
@@ -13,8 +16,7 @@ public:
 	void setNormal(glm::vec3 normal);
 
 	int id;
-	glm::vec3 p;
-	glm::vec3 n;
+
 	glm::vec3 vDelta;
 	glm::vec3 nDelta;
 

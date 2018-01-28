@@ -25,6 +25,7 @@ public:
 	~Skin();
 
 	bool isTex;
+
 	glm::mat4 worldM;
 	vector<glm::vec3> positions;
 	vector<glm::vec3> normals;
@@ -37,12 +38,11 @@ public:
 	
 	void init(vector<Joint*>* ptr);
 	void draw(GLuint shaderProgram);
-	void update();
+	void update(float phi);
 
 	void print();
 	void setJointsPtr(vector<Joint*>* ptr);
-	glm::vec3 getDeform(int id, bool normalize);
-	glm::vec3 getDeform2(int id, bool normalize);
+	glm::vec3 getDeform(int id, bool normalize, float phi);
 
 	//ref: http://www.opengl-tutorial.org/beginners-tutorials/tutorial-5-a-textured-cube/
 	GLuint loadBMP_custom(const char * imagepath);

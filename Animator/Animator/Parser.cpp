@@ -53,6 +53,7 @@ Skin* Parser::readSkin(const char*filepath)
 			//cout << p0 << " " << p1 << " " << p2 << endl;
 			skin->positions.push_back(glm::vec3(stof(p0), stof(p1), stof(p2)));
 			
+			// Vertex class
 			Vertex* V = new Vertex();
 			V->setIndex(vcounter);
 			V->setPosition(glm::vec3(stof(p0), stof(p1), stof(p2)));
@@ -76,7 +77,6 @@ Skin* Parser::readSkin(const char*filepath)
 
 			//cout << p0 << " " << p1 << " " << p2 << endl;
 			skin->normals.push_back(glm::vec3(stof(p0), stof(p1), stof(p2)));
-			
 			skin->vertices[ncounter]->setNormal(glm::vec3(stof(p0), stof(p1), stof(p2)));
 			ncounter++;
 
@@ -113,11 +113,12 @@ Skin* Parser::readSkin(const char*filepath)
 			iss >> p1;
 			iss >> p2;
 
-			cout << p0 << " " << p1 << " " << p2 << endl;
+			//cout << p0 << " " << p1 << " " << p2 << endl;
 			skin->indices.push_back(stoi(p0));
 			skin->indices.push_back(stoi(p1));
 			skin->indices.push_back(stoi(p2));
 
+			// Face class
 			Face* F = new Face();
 			F->setIndex(fcounter);
 			F->setVertices(skin->vertices[stoi(p0)], skin->vertices[stoi(p1)], skin->vertices[stoi(p2)]);
@@ -136,16 +137,11 @@ Skin* Parser::readSkin(const char*filepath)
 		{
 			string num, index, weight;
 			iss >> num;
-
-			//vector<int>* weightInds = new vector<int>();
-			//vector<float>* weights = new vector<float>();
 			
 			for (int i = 0; i < 2 * stoi(num); i+=2)
 			{
 				iss >> index;
 				iss >> weight;
-				//weightInds->push_back(stoi(index));
-				//weights->push_back(stoi(weight));
 				//cout << index << " " << weight << endl;
 
 				skin->vertices[wcounter]->jointId.push_back(stoi(index));
@@ -153,8 +149,6 @@ Skin* Parser::readSkin(const char*filepath)
 			}
 			
 			wcounter++;
-			//skin->weightInds.push_back(weightInds);
-			//skin->weights.push_back(weights);
 
 			check[1]--;
 			if (check[1] == 0)
@@ -227,6 +221,7 @@ Skin* Parser::readSkin(const char*filepath)
 		skin-> isTex = true;
 	//skin->print();
 	cout << "[Read] .skin file successfully read" << endl;
+
 	return skin;
 }
 
@@ -238,7 +233,7 @@ int  Parser::readMorph(const char * filepath, Skin* skin)
 	if (!file)
 	{
 		cout << "Cannot open input morph file.\n" << endl;
-		return - 1;
+		return -1;
 	}
 
 	glm::vec2 check(-1, 0);
@@ -261,11 +256,6 @@ int  Parser::readMorph(const char * filepath, Skin* skin)
 
 			//cout << ind << ": " << p0 << " " << p1 << " " << p2 << endl;
 			skin->vertices[stoi(ind)]->vDelta = glm::vec3(stof(p0), stof(p1), stof(p2)) - skin->vertices[stoi(ind)]->p;
-
-			//Vertex* V = new Vertex();
-			//V->setIndex(vcounter);
-			//V->setPosition(glm::vec3(stof(p0), stof(p1), stof(p2)));
-			//skin->vertices.push_back(V);
 			vcounter++;
 
 			check[1]--;
@@ -286,7 +276,6 @@ int  Parser::readMorph(const char * filepath, Skin* skin)
 
 			//cout << ind << ": " << p0 << " " << p1 << " " << p2 << endl;
 			skin->vertices[stoi(ind)]->nDelta = glm::vec3(stof(p0), stof(p1), stof(p2)) - skin->vertices[stoi(ind)]->n;
-
 			ncounter++;
 
 			check[1]--;
@@ -316,6 +305,8 @@ int  Parser::readMorph(const char * filepath, Skin* skin)
 			} while (iss);
 		}
 	}
+
+	cout << "[Read] .morph file successfully read" << endl;
 	return 0;
 }
 
