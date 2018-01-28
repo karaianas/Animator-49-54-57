@@ -28,7 +28,7 @@ public:
 	~Parser();
 
 	Skin* readSkin(const char* filepath);
-	void readMorph(const char* filepath, Skin* skin);
+	int readMorph(const char* filepath, Skin* skin);
 
 	glm::vec2 processKeyword(string word, int num);
 	void vec2matConverter(Skin* skin);

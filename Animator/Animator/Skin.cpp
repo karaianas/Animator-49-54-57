@@ -48,7 +48,7 @@ void Skin::init(vector<Joint*>* ptr)
 	// Texture
 	if (isTex)
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, VBO2);
+		glBindBuffer(GL_ARRAY_BUFFER, VBO3);
 		glBufferData(GL_ARRAY_BUFFER, texcoords.size() * sizeof(glm::vec2), texcoords.data(), GL_STATIC_DRAW);
 
 		glEnableVertexAttribArray(2);
@@ -67,7 +67,7 @@ void Skin::draw(GLuint shaderProgram)
 		uTexture = glGetUniformLocation(shaderProgram, "textureSampler");
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture);
-		glUniform1i(uTexture, 0);
+		//glUniform1i(uTexture, 0);
 	}
 
 	uProjection = glGetUniformLocation(shaderProgram, "projection");
@@ -181,21 +181,6 @@ glm::vec3 Skin::getDeform2(int id, bool normalize)
 		//M += w * W * glm::transpose(glm::inverse(B));
 	}
 
-	// Testing phi == 1.0f
-	//glm::vec3 vsum(0.0f, 0.0f, 0.0f);
-	//glm::vec3 nsum(0.0f, 0.0f, 0.0f);
-
-	//for (auto vertex : vertices)
-	//{
-	//	if (vertex->vDelta[0] != 0 || vertex->vDelta[1] != 0 || vertex->vDelta[2] != 0)
-	//	{
-	//		vsum += vertex->vDelta;
-	//		nsum += vertex->nDelta;
-	//	}
-	//}
-	//if (vsum[0] != 0 || vsum[1] != 0 || vsum[2] != 0)
-	//	cout << "==========" << vsum[0] << " " << vsum[1]  << " " << vsum[2] << endl;
-
 	if (normalize == 1)
 	{
 		glm::vec3 result = M * glm::vec4(V->n + 3.0f * V->nDelta, 0.0f);
@@ -205,11 +190,6 @@ glm::vec3 Skin::getDeform2(int id, bool normalize)
 	else
 	{
 		glm::vec3 result = M * glm::vec4(V->p + 3.0f * V->vDelta, 1.0f);
-		if (V->id == 895)
-		{
-			cout << "result: " << result[0] << " " << result[1] << " " << result[2] << endl;
-			cout << "result: " << V->p[0] << " " << V->p[1] << " " << V->p[2] << endl;
-		}
 		//cout << "p : " << result[0] << " " << result[1] << " " << result[2] << endl;
 		return result;
 	}

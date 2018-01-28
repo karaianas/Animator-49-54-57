@@ -67,8 +67,9 @@ Skin* Model::readSkin(const char * filepath)
 
 	// Test zone
 	// Read .morph if available
-	P->readMorph(".//Resources//morph//head1.morph.txt", skin);
-	skin->update();
+
+	//P->readMorph(".//Resources//morph//head1.morph.txt", skin;
+	//skin->update();
 
 	return skin;
 }

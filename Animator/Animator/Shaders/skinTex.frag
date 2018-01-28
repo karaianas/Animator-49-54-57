@@ -33,6 +33,7 @@ void directional()
 	// specular
 
 	vec3 result = diff + ambi;
-	color = texture( textureSampler, T).rgba;//vec4(result, 1.0f);
-	
+	//color = texture( textureSampler, T).rgba;//vec4(result, 1.0f);
+	color = vec4(result, 1.0f);
+	//color = vec4(N, 1.0f);
 }

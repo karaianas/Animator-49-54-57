@@ -113,7 +113,7 @@ Skin* Parser::readSkin(const char*filepath)
 			iss >> p1;
 			iss >> p2;
 
-			//cout << p0 << " " << p1 << " " << p2 << endl;
+			cout << p0 << " " << p1 << " " << p2 << endl;
 			skin->indices.push_back(stoi(p0));
 			skin->indices.push_back(stoi(p1));
 			skin->indices.push_back(stoi(p2));
@@ -230,7 +230,7 @@ Skin* Parser::readSkin(const char*filepath)
 	return skin;
 }
 
-void Parser::readMorph(const char * filepath, Skin* skin)
+int  Parser::readMorph(const char * filepath, Skin* skin)
 {
 	ifstream file(filepath);
 	string line;
@@ -238,7 +238,7 @@ void Parser::readMorph(const char * filepath, Skin* skin)
 	if (!file)
 	{
 		cout << "Cannot open input morph file.\n" << endl;
-		return;
+		return - 1;
 	}
 
 	glm::vec2 check(-1, 0);
@@ -316,6 +316,7 @@ void Parser::readMorph(const char * filepath, Skin* skin)
 			} while (iss);
 		}
 	}
+	return 0;
 }
 
 glm::vec2 Parser::processKeyword(string word, int num)

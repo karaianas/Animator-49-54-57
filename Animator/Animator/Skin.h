@@ -51,8 +51,4 @@ public:
 	vector<Vertex*> vertices;
 	vector<Face*> faces;
 	vector<glm::mat4> Bmatrices;// This should be inside Joint?
-
-	// Morphing
-	vector<float> phiDelta;
-	vector<int> iDelta;
 };
