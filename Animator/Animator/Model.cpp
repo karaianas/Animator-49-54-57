@@ -69,7 +69,7 @@ Skin* Model::readSkin(const char * filepath)
 	// Read .morph if available
 	if (string(filepath) == ".//Resources//skin//head.skin.txt" || string(filepath) == ".//Resources//skin//head_tex.skin.txt")
 	{
-		P->readMorph(".//Resources//morph//head1.morph.txt", skin);
+		P->readMorph(".//Resources//morph//head2.morph.txt", skin);
 		skin->update(0.0f);
 	}
 

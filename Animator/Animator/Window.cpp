@@ -49,22 +49,17 @@ void Window::mainMenu()
 {
 	// Test zone
 	cout << "-----------------------------------------" << endl;
-	cout << endl << "Type in [skeleton] [skin] [morph] [morph] file names" << endl;
-	cout << "If you wish to not load a particular file, write N/A instead" << endl;
-	cout << "e.g.[head] [head_tex] [head1] [N/A]" << endl;
+	cout << endl << "Type in [skeleton] [skin] file names" << endl;
+	cout << "e.g.[head] [head_tex]" << endl;
 
-	string skelName, skinName, morph1, morph2;
-	cin >> skelName >> skinName >> morph1 >> morph2;
+	string skelName, skinName;
+	cin >> skelName >> skinName;;
 
 	string skelFilePath = ".//Resources//skel//" + skelName + ".skel.txt";
 	string skinFilePath = ".//Resources//skin//" + skinName + ".skin.txt";
-	string morph1Path = ".//Resources//skin//" + morph1 + ".morph.txt";
-	string morph2Path = ".//Resources//skin//" + morph2 + ".morph.txt";
 
 	ifstream file0(skelFilePath);
 	ifstream file1(skinFilePath);
-	ifstream file2(morph1Path);
-	ifstream file3(morph2Path);
 
 	if (file0 && file1)
 	{
@@ -82,12 +77,6 @@ void Window::mainMenu()
 		}
 		else
 			skinProgram = LoadShaders(".//Shaders//skin.vert", ".//Shaders//skin.frag");
-
-		// Morphing
-		//if (file2)
-		//	M->readMorph(morph1Path.c_str());
-
-		//cout << "Opening [" << skelName << ".skel] and [" << skinName << ".skin]" << endl;
 
 	}
 	else
