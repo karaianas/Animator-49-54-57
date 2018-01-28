@@ -88,8 +88,8 @@ void Window::initialize_objects()
 	M = new Model();
 
 	// By default, read in wasp model
-	M->readSkel(".//Resources//skel//wasp.skel.txt");	
-	M->readSkin(".//Resources//skin//wasp.skin.txt");
+	M->readSkel(".//Resources//skel//head.skel.txt");	
+	M->readSkin(".//Resources//skin//head_tex.skin.txt");
 
 	// For IK purpose
 	goal = glm::vec3(goalRadius * glm::cos(goalAngle), 4, goalRadius * glm::sin(goalAngle));

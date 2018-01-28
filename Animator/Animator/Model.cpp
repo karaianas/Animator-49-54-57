@@ -65,6 +65,11 @@ Skin* Model::readSkin(const char * filepath)
 	if (allJoints.size() > 0)
 		skin->init(&allJoints);
 
+	// Test zone
+	// Read .morph if available
+	P->readMorph(".//Resources//morph//head1.morph.txt", skin);
+	skin->update();
+
 	return skin;
 }
 

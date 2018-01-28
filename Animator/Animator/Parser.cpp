@@ -25,7 +25,7 @@ Skin* Parser::readSkin(const char*filepath)
 
 	if (!file) 
 	{
-		cout << "Cannot open input file.\n" << endl;
+		cout << "Cannot open input skin file.\n" << endl;
 		return nullptr;
 	}
 
@@ -217,11 +217,105 @@ Skin* Parser::readSkin(const char*filepath)
 
 	vec2matConverter(skin);
 
+	cout << "# vertices: " << vcounter << endl;
+	cout << "# normals: " << ncounter << endl;
+	cout << "# triangles: " << fcounter << endl;
+	cout << "# weights: " << wcounter << endl;
+	cout << "# texCoords: " << tcounter << endl;
+
 	if (tcounter > 0)
 		skin-> isTex = true;
 	//skin->print();
 	cout << "[Read] .skin file successfully read" << endl;
 	return skin;
+}
+
+void Parser::readMorph(const char * filepath, Skin* skin)
+{
+	ifstream file(filepath);
+	string line;
+
+	if (!file)
+	{
+		cout << "Cannot open input morph file.\n" << endl;
+		return;
+	}
+
+	glm::vec2 check(-1, 0);
+	int vcounter = 0;
+	int ncounter = 0;
+
+	// Read line by line
+	for (line; getline(file, line);)
+	{
+		istringstream iss(line);
+
+		// Positions
+		if (check[0] == 0)
+		{
+			string ind, p0, p1, p2;
+			iss >> ind;
+			iss >> p0;
+			iss >> p1;
+			iss >> p2;
+
+			//cout << ind << ": " << p0 << " " << p1 << " " << p2 << endl;
+			skin->vertices[stoi(ind)]->vDelta = glm::vec3(stof(p0), stof(p1), stof(p2)) - skin->vertices[stoi(ind)]->p;
+
+			//Vertex* V = new Vertex();
+			//V->setIndex(vcounter);
+			//V->setPosition(glm::vec3(stof(p0), stof(p1), stof(p2)));
+			//skin->vertices.push_back(V);
+			vcounter++;
+
+			check[1]--;
+			if (check[1] == 0)
+			{
+				check[0] = -1;
+				continue;
+			}
+		}
+		// Normals
+		else if (check[0] == 1)
+		{
+			string ind, p0, p1, p2;
+			iss >> ind;
+			iss >> p0;
+			iss >> p1;
+			iss >> p2;
+
+			//cout << ind << ": " << p0 << " " << p1 << " " << p2 << endl;
+			skin->vertices[stoi(ind)]->nDelta = glm::vec3(stof(p0), stof(p1), stof(p2)) - skin->vertices[stoi(ind)]->n;
+
+			ncounter++;
+
+			check[1]--;
+			if (check[1] == 0)
+			{
+				check[0] = -1;
+				continue;
+			}
+		}
+		else if (line[0] == '}')
+		{
+			continue;
+		}
+		// Headers
+		else
+		{
+			// Read word by word
+			do {
+				string word, num;
+				iss >> word;
+				iss >> num;
+
+				// Find keywords
+				check = processKeyword(word, stoi(num));
+				if (check[0] != -1)
+					break;
+			} while (iss);
+		}
+	}
 }
 
 glm::vec2 Parser::processKeyword(string word, int num)

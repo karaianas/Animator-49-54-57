@@ -87,8 +87,8 @@ void Skin::update()
 {
 	for (int i = 0; i < vertices.size(); i++)
 	{
-		positions[i] = getDeform(i, 0);
-		normals[i] = getDeform(i, 1);
+		positions[i] = getDeform2(i, 0);
+		normals[i] = getDeform2(i, 1);
 	}
 	glBindVertexArray(VAO);
 
@@ -157,6 +157,59 @@ glm::vec3 Skin::getDeform(int id, bool normalize)
 	else
 	{
 		glm::vec3 result = M * glm::vec4(V->p, 1.0f);
+		//cout << "p : " << result[0] << " " << result[1] << " " << result[2] << endl;
+		return result;
+	}
+}
+
+glm::vec3 Skin::getDeform2(int id, bool normalize)
+{
+	Vertex* V = vertices[id];
+	glm::mat4 M(0.0f);
+	glm::vec4 tmp(0.0f, 0.0f, 0.0f, 0.0f);
+
+	for (int i = 0; i < V->jointId.size(); i++)
+	{
+		float w = V->jointW[i];
+		int jointId = V->jointId[i];
+		Joint* J = jointsPtr->at(jointId);
+		glm::mat4 W = J->worldM;
+		glm::mat4 B = Bmatrices[jointId];
+
+		// Should prob use inverse transform for safety
+		M += w * W * glm::inverse(B);
+		//M += w * W * glm::transpose(glm::inverse(B));
+	}
+
+	// Testing phi == 1.0f
+	//glm::vec3 vsum(0.0f, 0.0f, 0.0f);
+	//glm::vec3 nsum(0.0f, 0.0f, 0.0f);
+
+	//for (auto vertex : vertices)
+	//{
+	//	if (vertex->vDelta[0] != 0 || vertex->vDelta[1] != 0 || vertex->vDelta[2] != 0)
+	//	{
+	//		vsum += vertex->vDelta;
+	//		nsum += vertex->nDelta;
+	//	}
+	//}
+	//if (vsum[0] != 0 || vsum[1] != 0 || vsum[2] != 0)
+	//	cout << "==========" << vsum[0] << " " << vsum[1]  << " " << vsum[2] << endl;
+
+	if (normalize == 1)
+	{
+		glm::vec3 result = M * glm::vec4(V->n + 3.0f * V->nDelta, 0.0f);
+		//cout << "n orig: " << result[0] << " " << result[1] << " " << result[2] << endl;
+		return glm::normalize(result);
+	}
+	else
+	{
+		glm::vec3 result = M * glm::vec4(V->p + 3.0f * V->vDelta, 1.0f);
+		if (V->id == 895)
+		{
+			cout << "result: " << result[0] << " " << result[1] << " " << result[2] << endl;
+			cout << "result: " << V->p[0] << " " << V->p[1] << " " << V->p[2] << endl;
+		}
 		//cout << "p : " << result[0] << " " << result[1] << " " << result[2] << endl;
 		return result;
 	}

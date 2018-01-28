@@ -42,6 +42,7 @@ public:
 	void print();
 	void setJointsPtr(vector<Joint*>* ptr);
 	glm::vec3 getDeform(int id, bool normalize);
+	glm::vec3 getDeform2(int id, bool normalize);
 
 	//ref: http://www.opengl-tutorial.org/beginners-tutorials/tutorial-5-a-textured-cube/
 	GLuint loadBMP_custom(const char * imagepath);
@@ -50,4 +51,8 @@ public:
 	vector<Vertex*> vertices;
 	vector<Face*> faces;
 	vector<glm::mat4> Bmatrices;// This should be inside Joint?
+
+	// Morphing
+	vector<float> phiDelta;
+	vector<int> iDelta;
 };

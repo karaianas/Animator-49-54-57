@@ -2,6 +2,8 @@
 
 Vertex::Vertex()
 {
+	vDelta = glm::vec3();
+	nDelta = glm::vec3();
 }
 
 Vertex::~Vertex()
