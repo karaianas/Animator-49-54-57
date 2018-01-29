@@ -25,6 +25,7 @@ public:
 	~Skin();
 
 	bool isTex;
+	glm::vec2 lightMode;
 
 	glm::mat4 worldM;
 	vector<glm::vec3> positions;
@@ -32,7 +33,7 @@ public:
 	vector<GLuint> indices;
 	vector<glm::vec2> texcoords;
 	GLuint VBO, VBO2, VBO3, VAO, EBO;
-	GLuint uProjection, uModel, uView;
+	GLuint uProjection, uModel, uView, uLight;
 	GLuint texture, uTexture;
 	//GLuint uColor;
 	

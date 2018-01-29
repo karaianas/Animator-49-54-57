@@ -6,6 +6,7 @@ Skin::Skin()
 {
 	worldM = glm::mat4(1.0f);
 	isTex = false;
+	lightMode = glm::vec2(1.0f, 1.0f);
 }
 
 Skin::~Skin()
@@ -75,10 +76,12 @@ void Skin::draw(GLuint shaderProgram)
 	uProjection = glGetUniformLocation(shaderProgram, "projection");
 	uView = glGetUniformLocation(shaderProgram, "view");
 	uModel = glGetUniformLocation(shaderProgram, "model");
+	uLight = glGetUniformLocation(shaderProgram, "light");
 
 	glUniformMatrix4fv(uProjection, 1, GL_FALSE, &Window::P[0][0]);
 	glUniformMatrix4fv(uModel, 1, GL_FALSE, &worldM[0][0]);
 	glUniformMatrix4fv(uView, 1, GL_FALSE, &Window::V[0][0]);
+	glUniform2f(uLight, lightMode[0], lightMode[1]);
 
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);

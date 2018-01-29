@@ -27,6 +27,7 @@ public:
 
 	glm::mat4 worldM;
 	vector<glm::vec3> normals;
+	glm::vec2 lightMode;
 
 	void draw(GLuint, glm::mat4, glm::vec3);
 	void update();
@@ -37,7 +38,7 @@ public:
 	// These variables are needed for the shader program
 	GLuint VBO, VAO, EBO, VBO2;
 	GLuint uProjection, uModel, uView;
-	GLuint uColor;
+	GLuint uColor, uLight;
 };
 
 // Define the coordinates and indices needed to draw the cube. Note that it is not necessary

@@ -296,6 +296,7 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 				mode = 0;
 		}
 
+		// Wireframe/Shaded mode
 		if (key == GLFW_KEY_W)
 		{
 			if (wireframe)

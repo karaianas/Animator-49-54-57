@@ -7,10 +7,12 @@ uniform mat4 projection;
 uniform mat4 view;
 uniform mat4 model;
 uniform vec3 color;
+uniform vec2 light;
 
 out vec3 sampleExtraOutput;
 out vec3 P;
 out vec3 N;
+out vec2 lights;
 
 void main()
 {
@@ -18,4 +20,5 @@ void main()
 	P = vec3(model * vec4(position, 1.0f));
 	N = mat3(transpose(inverse(model))) * normal;
     sampleExtraOutput = color;
+	lights = light;
 }

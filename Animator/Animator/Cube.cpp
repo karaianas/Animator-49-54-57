@@ -7,6 +7,7 @@ using namespace std;
 Cube::Cube()
 {
 	worldM = glm::mat4(1.0f);
+	lightMode = glm::vec2(1.0f, 1.0f);
 
 	// Use normalized cube vertices as normals for now
 	for (int i = 0; i < 8; i++)
@@ -58,11 +59,15 @@ void Cube::draw(GLuint shaderProgram, glm::mat4 M, glm::vec3 rgb)
 	uView = glGetUniformLocation(shaderProgram, "view");
 	uModel = glGetUniformLocation(shaderProgram, "model");
 	uColor = glGetUniformLocation(shaderProgram, "color");
+	uLight = glGetUniformLocation(shaderProgram, "light");
+
 	// Now send these values to the shader program
 	glUniformMatrix4fv(uProjection, 1, GL_FALSE, &Window::P[0][0]);
 	glUniformMatrix4fv(uModel, 1, GL_FALSE, &worldM[0][0]);
 	glUniformMatrix4fv(uView, 1, GL_FALSE, &Window::V[0][0]);
 	glUniform3f(uColor, rgb[0], rgb[1], rgb[2]);
+	glUniform2f(uLight, lightMode[0], lightMode[1]);
+
 	// Now draw the cube. We simply need to bind the VAO associated with it.
 	glBindVertexArray(VAO);
 	// Tell OpenGL to draw with triangles, using 36 indices, the type of the indices, and the offset to start from

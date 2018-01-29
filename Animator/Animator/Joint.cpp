@@ -35,7 +35,7 @@ void Joint::draw(GLuint program, Cube* cube, glm::mat4 M)
 	cube->draw(program, M * worldM * S1, glm::vec3(1.0f, 0.0f, 0.0f));
 	
 	// Bone
-	cube->draw(program, M * worldM * offLocalM * scaleM, glm::vec3(0.0f, 1.0f, 1.0f));//offWorldM * scaleM);
+	cube->draw(program, M * worldM * offLocalM * scaleM, glm::vec3(1.0f, 1.0f, 1.0f));//offWorldM * scaleM);
 }
 
 void Joint::update(float angle_step, int axis)

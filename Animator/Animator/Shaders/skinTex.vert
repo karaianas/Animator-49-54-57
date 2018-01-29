@@ -7,10 +7,12 @@ layout (location = 2) in vec2 texcoords;
 uniform mat4 projection;
 uniform mat4 view;
 uniform mat4 model;
+uniform vec2 light;
 
 out vec3 P;
 out vec3 N;
 out vec2 T;
+out vec2 lights;
 
 void main()
 {
@@ -18,4 +20,5 @@ void main()
 	P = vec3(model * vec4(position, 1.0f));
 	N = mat3(transpose(inverse(model))) * normal;
 	T = texcoords;
+	lights = light;
 }
