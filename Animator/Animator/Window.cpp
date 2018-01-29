@@ -26,8 +26,7 @@ bool rotate_flag_L = false;
 bool rotate_flag_R = false;
 bool locked = false;
 
-bool isSkel = false;
-bool isSkin = true;
+int mode = 0;
 bool wireframe = false;
 
 // On some systems you need to change this to the absolute path
@@ -47,42 +46,82 @@ glm::mat4 Window::V;
 
 void Window::mainMenu()
 {
-	// Test zone
-	cout << "-----------------------------------------" << endl;
-	cout << endl << "Type in [skeleton] [skin] file names" << endl;
-	cout << "e.g.[head] [head_tex]" << endl;
-
-	string skelName, skinName;
-	cin >> skelName >> skinName;;
-
-	string skelFilePath = ".//Resources//skel//" + skelName + ".skel.txt";
-	string skinFilePath = ".//Resources//skin//" + skinName + ".skin.txt";
-
-	ifstream file0(skelFilePath);
-	ifstream file1(skinFilePath);
-
-	if (file0 && file1)
+	do 
 	{
-		delete M;
-		M = new Model();
-		M->readSkel(skelFilePath.c_str());
-		M->readSkin(skinFilePath.c_str());
-		
-		// Texture
-		if (M->skin->isTex)
+		cout << "-------------------------------" << endl;
+		string input;
+		getline(cin, input);
+		istringstream iss(input);
+		do
 		{
-			string texFilePath = ".//Resources//textures//" + skelName + ".bmp";
-			M->skin->loadBMP_custom(texFilePath.c_str());
-			skinProgram = LoadShaders(".//Shaders//skinTex.vert", ".//Shaders//skinTex.frag");
-		}
-		else
-			skinProgram = LoadShaders(".//Shaders//skin.vert", ".//Shaders//skin.frag");
+			// Process each word
+			string word;
+			iss >> word;
 
-	}
-	else
-		cout << "Cannot open input file.\n" << endl;
+			if (word == "project1")
+			{
+				string skel;
+				iss >> skel;
+				string skelFilePath = ".//Resources//skel//" + skel + ".skel.txt";
+				ifstream file(skelFilePath);
+				if (!file)
+				{
+					cout << "Cannot open input .skel file.\n" << endl;
+					mode = -1;
+				}
+				else
+				{
+					cout << "wth" << endl;
+					delete M;
+					M = new Model();
+					M->readSkel(skelFilePath.c_str());
+					mode = 0;
+				}
+				break;
+			}
+			else if (word == "project2")
+			{
+				string skel, skin;
+				iss >> skel >> skin;
+				string skelFilePath = ".//Resources//skel//" + skel + ".skel.txt";
+				string skinFilePath = ".//Resources//skin//" + skin + ".skin.txt";
 
+				ifstream file0(skelFilePath);
+				ifstream file1(skinFilePath);
 
+				if (file0 && file1)
+				{
+					delete M;
+					M = new Model();
+					M->readSkel(skelFilePath.c_str());
+					M->readSkin(skinFilePath.c_str());
+					mode = 1;
+
+					// Texture
+					if (M->skin->isTex)
+					{
+						string texFilePath = ".//Resources//textures//" + skel + ".bmp";
+						M->skin->loadBMP_custom(texFilePath.c_str());
+						skinProgram = LoadShaders(".//Shaders//skinTex.vert", ".//Shaders//skinTex.frag");
+					}
+					else
+						skinProgram = LoadShaders(".//Shaders//skin.vert", ".//Shaders//skin.frag");
+				}
+				else
+				{
+					cout << "Cannot open input .skel or .skin file.\n" << endl;
+					mode = -1;
+				}
+				break;
+			}
+			else
+			{
+				cout << "Invalid project argument" << endl;
+				mode = -1;
+				break;
+			}
+		} while (iss);
+	} while (mode == -1);
 }
 
 void Window::initialize_objects()
@@ -93,6 +132,7 @@ void Window::initialize_objects()
 	M = new Model();
 
 	// By default, read in wasp model
+	mode = 1;
 	M->readSkel(".//Resources//skel//wasp.skel.txt");	
 	M->readSkin(".//Resources//skin//wasp.skin.txt");
 
@@ -179,7 +219,7 @@ void Window::idle_callback()
 		//niter++;
 		if (M->IKsolver(selectedInd, goal) == -1)
 		{
-			cout << "IK Mode off: goal reached" << endl;
+			//cout << "IK Mode off: goal reached" << endl;
 			//IKmode = false;
 			niter = 0;
 		}
@@ -201,11 +241,21 @@ void Window::display_callback(GLFWwindow* window)
 	else
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-	if (isSkel)
+	// Skeleton mode
+	if (mode == 0)
 	{
 		glUseProgram(shaderProgram);
 		M->draw(shaderProgram);
 	}
+	else if (mode == 1)
+	{
+		glUseProgram(skinProgram);
+		M->skin->draw(skinProgram);
+	}
+	else
+	{
+	}
+
 
 	if (IKmode)
 	{
@@ -213,12 +263,6 @@ void Window::display_callback(GLFWwindow* window)
 		//point->draw(shaderProgram, glm::mat4(1.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		glm::mat4 T = glm::translate(glm::mat4(1.0f), goal) * glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.1f));
 		point->draw(shaderProgram, T, glm::vec3(0.0f, 1.0f, 0.0f));
-	}
-
-	if (isSkin)
-	{
-		glUseProgram(skinProgram);
-		M->skin->draw(skinProgram);
 	}
 
 	glfwPollEvents();
@@ -240,20 +284,16 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 			mainMenu();
 		}
 
-		// What to draw
-		if (key == GLFW_KEY_1)
+		// Skeleton/Skin mode
+		if (key == GLFW_KEY_S)
 		{
-			if (isSkel)
-				isSkel = false;
-			else
-				isSkel = true;
-		}
-		if (key == GLFW_KEY_2)
-		{
-			if (isSkin)
-				isSkin = false;
-			else
-				isSkin = true;
+			if (mode == 0)
+			{
+				if (M->skin != nullptr)
+					mode = 1;
+			}
+			else if(mode == 1)
+				mode = 0;
 		}
 
 		if (key == GLFW_KEY_W)

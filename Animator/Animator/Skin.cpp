@@ -92,7 +92,7 @@ void Skin::update(float phi)
 		positions[i] = getDeform(i, 0, phi);
 		normals[i] = getDeform(i, 1, phi);
 	}
-	cout << phi << endl;
+	//cout << phi << endl;
 	glBindVertexArray(VAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
