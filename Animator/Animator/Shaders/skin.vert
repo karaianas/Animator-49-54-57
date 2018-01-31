@@ -2,12 +2,15 @@
 
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec3 normal;
+layout (location = 3) in vec4 index;
+layout (location = 4) in vec4 weight;
 
 uniform mat4 projection;
 uniform mat4 view;
 uniform mat4 model;
 uniform vec3 color;
 uniform vec2 light;
+uniform mat4 Bmatrices[50];
 
 out vec3 P;
 out vec3 N;

@@ -25,6 +25,8 @@ void Skin::testZone()
 		jIndices.push_back(vertex->jointId);
 		jWeights.push_back(vertex->jointW);
 	}
+
+	//cout << "Index size: " << jIndices.size() << " Weights size: " << jWeights.size() << endl;
 }
 
 void Skin::init(vector<Joint*>* ptr)
@@ -39,6 +41,9 @@ void Skin::init(vector<Joint*>* ptr)
 	glGenBuffers(1, &VBO2);
 	glGenBuffers(1, &VBO3);
 	glGenBuffers(1, &EBO);
+
+	glGenBuffers(1, &VBO_i);
+	glGenBuffers(1, &VBO_w);
 
 	glBindVertexArray(VAO);
 
@@ -55,6 +60,20 @@ void Skin::init(vector<Joint*>* ptr)
 
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (GLvoid*)0);
+
+	// ---------------------------------
+	glBindBuffer(GL_ARRAY_BUFFER, VBO_i);
+	glBufferData(GL_ARRAY_BUFFER, jIndices.size() * sizeof(glm::vec4), jIndices.data(), GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(3);
+	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (GLvoid*)0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO_w);
+	glBufferData(GL_ARRAY_BUFFER, jWeights.size() * sizeof(glm::vec4), jWeights.data(), GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(4);
+	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (GLvoid*)0);
+	// ---------------------------------
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), GL_STATIC_DRAW);
@@ -88,11 +107,13 @@ void Skin::draw(GLuint shaderProgram)
 	uView = glGetUniformLocation(shaderProgram, "view");
 	uModel = glGetUniformLocation(shaderProgram, "model");
 	uLight = glGetUniformLocation(shaderProgram, "light");
+	uB = glGetUniformLocation(shaderProgram, "Bmatrices[0]");
 
 	glUniformMatrix4fv(uProjection, 1, GL_FALSE, &Window::P[0][0]);
 	glUniformMatrix4fv(uModel, 1, GL_FALSE, &worldM[0][0]);
 	glUniformMatrix4fv(uView, 1, GL_FALSE, &Window::V[0][0]);
 	glUniform2f(uLight, lightMode[0], lightMode[1]);
+	glUniformMatrix4fv(uB, 50, GL_FALSE, glm::value_ptr(WBmatrices[0]));
 
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);

@@ -42,6 +42,7 @@ public:
 	vector<glm::vec4> jWeights;
 	vector<glm::mat4> WBmatrices;
 	void testZone();
+	GLuint VBO_i, VBO_w, uB;
 	
 	void init(vector<Joint*>* ptr);
 	void draw(GLuint shaderProgram);
