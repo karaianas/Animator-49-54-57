@@ -11,6 +11,7 @@
 #include "glm/glm.hpp"
 #include "glm/gtx/transform.hpp"
 #include "glm/matrix.hpp"
+#include "glm/gtc/type_ptr.hpp"// added for the use of value_ptr()
 
 // Set up GLEW
 #define GLEW_STATIC
