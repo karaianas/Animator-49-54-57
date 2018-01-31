@@ -138,14 +138,16 @@ Skin* Parser::readSkin(const char*filepath)
 			string num, index, weight;
 			iss >> num;
 			
+			int counter = 0;
 			for (int i = 0; i < 2 * stoi(num); i+=2)
 			{
 				iss >> index;
 				iss >> weight;
 				//cout << index << " " << weight << endl;
 
-				skin->vertices[wcounter]->jointId.push_back(stoi(index));
-				skin->vertices[wcounter]->jointW.push_back(stof(weight));
+				skin->vertices[wcounter]->jointId[counter] = (stoi(index));
+				skin->vertices[wcounter]->jointW[counter] = (stof(weight));
+				counter++;
 			}
 			
 			wcounter++;

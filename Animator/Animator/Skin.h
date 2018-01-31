@@ -40,6 +40,7 @@ public:
 	void init(vector<Joint*>* ptr);
 	void draw(GLuint shaderProgram);
 	void update(float phi);
+	void computeWB();
 
 	void print();
 	void setJointsPtr(vector<Joint*>* ptr);
@@ -51,5 +52,6 @@ public:
 	vector<Joint*>* jointsPtr;
 	vector<Vertex*> vertices;
 	vector<Face*> faces;
-	vector<glm::mat4> Bmatrices;// This should be inside Joint?
+	vector<glm::mat4> Bmatrices;
+	vector<glm::mat4> WBmatrices;
 };

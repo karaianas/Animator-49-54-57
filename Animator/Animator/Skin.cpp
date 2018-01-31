@@ -21,6 +21,7 @@ Skin::~Skin()
 void Skin::init(vector<Joint*>* ptr)
 {
 	jointsPtr = ptr;
+	computeWB();
 	update(0.0f);
 
 	glGenVertexArrays(1, &VAO);
@@ -90,6 +91,11 @@ void Skin::draw(GLuint shaderProgram)
 
 void Skin::update(float phi)
 {
+	for (auto joint : *jointsPtr)
+	{
+		WBmatrices[joint->id] = joint->worldM * glm::inverse(Bmatrices[joint->id]);
+	}
+
 	for (int i = 0; i < vertices.size(); i++)
 	{
 		positions[i] = getDeform(i, 0, phi);
@@ -118,6 +124,14 @@ void Skin::update(float phi)
 	glBindVertexArray(0);
 }
 
+void Skin::computeWB()
+{
+	for (auto joint : *jointsPtr)
+	{
+		WBmatrices.push_back(joint->worldM * glm::inverse(Bmatrices[joint->id]));
+	}
+}
+
 void Skin::print()
 {
 	cout << "# vertices: " << vertices.size() << endl;
@@ -141,15 +155,16 @@ glm::vec3 Skin::getDeform(int id, bool normalize, float phi)
 	glm::mat4 M(0.0f);
 	glm::vec4 tmp(0.0f, 0.0f, 0.0f, 0.0f);
 
-	for (int i = 0; i < V->jointId.size(); i++)
+	for (int i = 0; i < 4; i++)
 	{
 		float w = V->jointW[i];
 		int jointId = V->jointId[i];
 		Joint* J = jointsPtr->at(jointId);
-		glm::mat4 W = J->worldM;
-		glm::mat4 B = Bmatrices[jointId];
+		//glm::mat4 W = J->worldM;
+		//glm::mat4 B = Bmatrices[jointId];
 
-		M += w * W * glm::inverse(B);
+		//M += w * W * glm::inverse(B);
+		M += w * WBmatrices[jointId];
 		//M += w * W * glm::transpose(glm::inverse(B));
 	}
 
