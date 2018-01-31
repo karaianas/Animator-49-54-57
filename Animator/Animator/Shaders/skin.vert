@@ -20,16 +20,18 @@ void main()
 {
 	//gl_Position =  projection * view * model * vec4(position.x, position.y, position.z, 1.0);
 	P = vec3(model * vec4(position, 1.0f));
-	N = mat3(transpose(inverse(model))) * normal;
+	//N = mat3(transpose(inverse(model))) * normal;
 	lights = light;
 
-	vec4 newPos = vec4(0.0f, 0.0f, 0.0f, 0.0f);
+	vec4 newP = vec4(0.0f, 0.0f, 0.0f, 0.0f);
+	vec4 newN = vec4(0.0f, 0.0f, 0.0f, 0.0f);
 	for(int i = 0;  i < 4; i++)
 	{
 		int id = int(index[i]);
-		newPos += weight[i] * Bmatrices[id] * vec4(position, 1.0f);
+		newP += weight[i] * Bmatrices[id] * vec4(position, 1.0f);
+		newN += weight[i] * Bmatrices[id] * vec4(normal, 0.0f);
 	}
 
-	gl_Position =  projection * view * model * vec4(newPos.x, newPos.y, newPos.z, 1.0);
-
+	gl_Position =  projection * view * model * vec4(newP.x, newP.y, newP.z, 1.0);
+	N = mat3(transpose(inverse(model))) * normalize(vec3(newN));
 }
