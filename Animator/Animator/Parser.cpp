@@ -227,7 +227,7 @@ Skin* Parser::readSkin(const char*filepath)
 	return skin;
 }
 
-int  Parser::readMorph(const char * filepath, Skin* skin)
+int  Parser::readMorph(const char * filepath, Skin* skin, int flag)
 {
 	ifstream file(filepath);
 	string line;
@@ -258,6 +258,7 @@ int  Parser::readMorph(const char * filepath, Skin* skin)
 
 			//cout << ind << ": " << p0 << " " << p1 << " " << p2 << endl;
 			skin->vertices[stoi(ind)]->vDelta = glm::vec3(stof(p0), stof(p1), stof(p2)) - skin->vertices[stoi(ind)]->p;
+			skin->vertices[stoi(ind)]->flag = flag;
 			vcounter++;
 
 			check[1]--;

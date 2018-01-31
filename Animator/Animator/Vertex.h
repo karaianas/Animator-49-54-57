@@ -17,6 +17,7 @@ public:
 	//vector<float> jointW;
 
 	//int id;
+	int flag;
 
 	Vertex();
 	~Vertex();

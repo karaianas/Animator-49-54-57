@@ -343,12 +343,13 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 			}
 		}
 
+		// Right eyebrow
 		if (key == GLFW_KEY_M)
 		{
 			if (mods == GLFW_MOD_SHIFT)
 			{
 				phi += 0.1f;
-				M->skin->update(phi);
+				M->skin->update(phi, 2);
 			}
 			else
 			{
@@ -357,7 +358,27 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 				else
 				{
 					phi -= 0.1f;
-					M->skin->update(phi);
+					M->skin->update(phi, 2);
+				}
+			}
+		}
+
+		// Left cheek
+		if (key == GLFW_KEY_N)
+		{
+			if (mods == GLFW_MOD_SHIFT)
+			{
+				phi += 0.1f;
+				M->skin->update(phi, 1);
+			}
+			else
+			{
+				if (phi <= 0)
+					phi = 0;
+				else
+				{
+					phi -= 0.1f;
+					M->skin->update(phi, 1);
 				}
 			}
 		}
@@ -379,12 +400,12 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 					if (mods == GLFW_MOD_SHIFT)
 					{
 						M->updateJoint(selectedInd, angleStep, axis);
-						M->skin->update(phi);
+						M->skin->update(phi, 0);
 					}
 					else
 					{
 						M->updateJoint(selectedInd, -angleStep, axis);
-						M->skin->update(phi);
+						M->skin->update(phi, 0);
 					}
 				}
 			}

@@ -6,6 +6,7 @@ Vertex::Vertex()
 	nDelta = glm::vec3();
 	jointId = glm::vec4(0);
 	jointW = glm::vec4(0.0f);
+	flag = 0;
 }
 
 Vertex::~Vertex()

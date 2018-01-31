@@ -46,7 +46,7 @@ public:
 	
 	void init(vector<Joint*>* ptr);
 	void draw(GLuint shaderProgram);
-	void update(float phi);
+	void update(float phi, int flag);
 	void computeWB();
 
 	void print();

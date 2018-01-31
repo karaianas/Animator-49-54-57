@@ -34,7 +34,7 @@ void Skin::init(vector<Joint*>* ptr)
 	jointsPtr = ptr;
 	computeWB();
 	testZone();
-	update(0.0f);
+	update(0.0f, 0);
 
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -120,7 +120,7 @@ void Skin::draw(GLuint shaderProgram)
 	glBindVertexArray(0);
 }
 
-void Skin::update(float phi)
+void Skin::update(float phi, int flag)
 {
 	for (auto joint : *jointsPtr)
 	{
@@ -130,8 +130,11 @@ void Skin::update(float phi)
 	for (int i = 0; i < vertices.size(); i++)
 	{
 		Vertex* V = vertices[i];
-		positions[i] = V->p + phi * V->vDelta;
-		normals[i] = V->n + phi * V->nDelta;
+		if (V->flag == flag)
+		{
+			positions[i] = V->p + phi * V->vDelta;
+			normals[i] = V->n + phi * V->nDelta;
+		}
 		//positions[i] = getDeform(i, 0, phi);
 		//normals[i] = getDeform(i, 1, phi);
 	}
