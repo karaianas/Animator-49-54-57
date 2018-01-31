@@ -36,6 +36,12 @@ public:
 	GLuint uProjection, uModel, uView, uLight;
 	GLuint texture, uTexture;
 	//GLuint uColor;
+
+	// Test zone
+	vector<glm::vec4> jIndices;
+	vector<glm::vec4> jWeights;
+	vector<glm::mat4> WBmatrices;
+	void testZone();
 	
 	void init(vector<Joint*>* ptr);
 	void draw(GLuint shaderProgram);
@@ -53,5 +59,4 @@ public:
 	vector<Vertex*> vertices;
 	vector<Face*> faces;
 	vector<glm::mat4> Bmatrices;
-	vector<glm::mat4> WBmatrices;
 };

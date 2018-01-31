@@ -18,10 +18,20 @@ Skin::~Skin()
 	glDeleteBuffers(1, &EBO);
 }
 
+void Skin::testZone()
+{
+	for (auto vertex : vertices)
+	{
+		jIndices.push_back(vertex->jointId);
+		jWeights.push_back(vertex->jointW);
+	}
+}
+
 void Skin::init(vector<Joint*>* ptr)
 {
 	jointsPtr = ptr;
 	computeWB();
+	testZone();
 	update(0.0f);
 
 	glGenVertexArrays(1, &VAO);
