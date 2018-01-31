@@ -19,10 +19,12 @@ out vec2 lights;
 void main()
 {
 	//gl_Position =  projection * view * model * vec4(position.x, position.y, position.z, 1.0);
-	P = vec3(model * vec4(position, 1.0f));
 	//N = mat3(transpose(inverse(model))) * normal;
+	
+	P = vec3(model * vec4(position, 1.0f));
 	lights = light;
 
+	// Skinning
 	vec4 newP = vec4(0.0f, 0.0f, 0.0f, 0.0f);
 	vec4 newN = vec4(0.0f, 0.0f, 0.0f, 0.0f);
 	for(int i = 0;  i < 4; i++)

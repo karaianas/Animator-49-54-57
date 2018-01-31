@@ -129,6 +129,9 @@ void Skin::update(float phi)
 
 	for (int i = 0; i < vertices.size(); i++)
 	{
+		Vertex* V = vertices[i];
+		positions[i] = V->p + phi * V->vDelta;
+		normals[i] = V->n + phi * V->nDelta;
 		//positions[i] = getDeform(i, 0, phi);
 		//normals[i] = getDeform(i, 1, phi);
 	}

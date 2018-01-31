@@ -21,7 +21,7 @@ void directional()
 	vec3 lightColor1 = vec3(0.0f, 0.0f, 1.0f);
 
 	vec3 L2 = normalize(vec3(-1.0f, 1.0f, 1.0f));
-	vec3 lightColor2 = vec3(1.0f, 0.0f, 0.0f);
+	vec3 lightColor2 = vec3(0.0f, 1.0f, 0.0f);
 
 	// diffuse
 	float k_d = 0.4f;
@@ -32,7 +32,7 @@ void directional()
 	vec3 diff2 = k_d * inProduct2 * lightColor2;
 
 	// ambient
-	vec3 ambi1 = vec3(0.5f, 0.5f, 0.5f);
+	vec3 ambi1 = vec3(0.3f, 0.3f, 0.3f);
 
 	// specular
 

@@ -22,7 +22,7 @@ void directional()
 	vec3 lightColor1 = vec3(0.0f, 0.0f, 1.0f);
 
 	vec3 L2 = normalize(vec3(-1.0f, 1.0f, 1.0f));
-	vec3 lightColor2 = vec3(1.0f, 0.0f, 0.0f);
+	vec3 lightColor2 = vec3(0.0f, 1.0f, 0.0f);
 
 	// diffuse
 	float k_d = 0.6f;
