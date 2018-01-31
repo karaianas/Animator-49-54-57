@@ -18,8 +18,18 @@ out vec2 lights;
 
 void main()
 {
-	gl_Position =  projection * view * model * vec4(position.x, position.y, position.z, 1.0);
+	//gl_Position =  projection * view * model * vec4(position.x, position.y, position.z, 1.0);
 	P = vec3(model * vec4(position, 1.0f));
 	N = mat3(transpose(inverse(model))) * normal;
 	lights = light;
+
+	vec4 newPos = vec4(0.0f, 0.0f, 0.0f, 0.0f);
+	for(int i = 0;  i < 4; i++)
+	{
+		int id = int(index[i]);
+		newPos += weight[i] * Bmatrices[id] * vec4(position, 1.0f);
+	}
+
+	gl_Position =  projection * view * model * vec4(newPos.x, newPos.y, newPos.z, 1.0);
+
 }

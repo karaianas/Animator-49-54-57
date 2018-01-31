@@ -129,8 +129,8 @@ void Skin::update(float phi)
 
 	for (int i = 0; i < vertices.size(); i++)
 	{
-		positions[i] = getDeform(i, 0, phi);
-		normals[i] = getDeform(i, 1, phi);
+		//positions[i] = getDeform(i, 0, phi);
+		//normals[i] = getDeform(i, 1, phi);
 	}
 	//cout << phi << endl;
 	glBindVertexArray(VAO);
