@@ -25,16 +25,16 @@ public:
 	~Skin();
 
 	bool isTex;
+	glm::mat4 worldM;
 	glm::vec2 lightMode;
 
-	glm::mat4 worldM;
 	vector<glm::vec3> positions;
 	vector<glm::vec3> normals;
 	vector<GLuint> indices;
 	vector<glm::vec2> texcoords;
+
 	GLuint VBO_p, VBO_n, VBO_t, VAO, EBO;
-	GLuint uMVP, uITM;
-	GLuint uModel, uLight;
+	GLuint uMVP, uITM, uModel, uLight;
 	GLuint texture, uTexture;
 	//GLuint uColor;
 

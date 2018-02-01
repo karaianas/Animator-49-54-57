@@ -5,6 +5,7 @@ using namespace std;
 
 class Vertex {
 public:
+	// Prob need to incorporate texCoord into Vertex class too
 	glm::vec3 p;
 	glm::vec3 n;
 
@@ -13,8 +14,6 @@ public:
 
 	glm::vec4 jointId;
 	glm::vec4 jointW;
-	//vector<int> jointId;
-	//vector<float> jointW;
 
 	//int id;
 	int flag;
