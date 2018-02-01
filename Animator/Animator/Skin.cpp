@@ -12,9 +12,11 @@ Skin::Skin()
 Skin::~Skin()
 {
 	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
-	glDeleteBuffers(1, &VBO2);
-	glDeleteBuffers(1, &VBO3);
+	glDeleteBuffers(1, &VBO_p);
+	glDeleteBuffers(1, &VBO_n);
+	glDeleteBuffers(1, &VBO_t);
+	glDeleteBuffers(1, &VBO_i);
+	glDeleteBuffers(1, &VBO_w);
 	glDeleteBuffers(1, &EBO);
 }
 
@@ -37,31 +39,27 @@ void Skin::init(vector<Joint*>* ptr)
 	update(0.0f, 0);
 
 	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &VBO2);
-	glGenBuffers(1, &VBO3);
-	glGenBuffers(1, &EBO);
-
+	glGenBuffers(1, &VBO_p);
+	glGenBuffers(1, &VBO_n);
+	glGenBuffers(1, &VBO_t);
 	glGenBuffers(1, &VBO_i);
 	glGenBuffers(1, &VBO_w);
+	glGenBuffers(1, &EBO);
 
 	glBindVertexArray(VAO);
 
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO_p);
 	glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(glm::vec3), positions.data(), GL_STATIC_DRAW);
-	//glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (GLvoid*)0);
-	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)0);
 
-	glBindBuffer(GL_ARRAY_BUFFER, VBO2);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO_n);
 	glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), normals.data(), GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (GLvoid*)0);
 
-	// ---------------------------------
 	glBindBuffer(GL_ARRAY_BUFFER, VBO_i);
 	glBufferData(GL_ARRAY_BUFFER, jIndices.size() * sizeof(glm::vec4), jIndices.data(), GL_STATIC_DRAW);
 
@@ -73,7 +71,6 @@ void Skin::init(vector<Joint*>* ptr)
 
 	glEnableVertexAttribArray(4);
 	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (GLvoid*)0);
-	// ---------------------------------
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), GL_STATIC_DRAW);
@@ -81,7 +78,7 @@ void Skin::init(vector<Joint*>* ptr)
 	// Texture
 	if (isTex)
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, VBO3);
+		glBindBuffer(GL_ARRAY_BUFFER, VBO_t);
 		glBufferData(GL_ARRAY_BUFFER, texcoords.size() * sizeof(glm::vec2), texcoords.data(), GL_STATIC_DRAW);
 
 		glEnableVertexAttribArray(2);
@@ -103,15 +100,14 @@ void Skin::draw(GLuint shaderProgram)
 		//glUniform1i(uTexture, 0);
 	}
 
-	uProjection = glGetUniformLocation(shaderProgram, "projection");
-	uView = glGetUniformLocation(shaderProgram, "view");
+	uPV = glGetUniformLocation(shaderProgram, "viewProjection");
 	uModel = glGetUniformLocation(shaderProgram, "model");
 	uLight = glGetUniformLocation(shaderProgram, "light");
 	uB = glGetUniformLocation(shaderProgram, "Bmatrices[0]");
 
-	glUniformMatrix4fv(uProjection, 1, GL_FALSE, &Window::P[0][0]);
+	glm::mat4 PV = Window::P * Window::V;
+	glUniformMatrix4fv(uPV, 1, GL_FALSE, &PV[0][0]);
 	glUniformMatrix4fv(uModel, 1, GL_FALSE, &worldM[0][0]);
-	glUniformMatrix4fv(uView, 1, GL_FALSE, &Window::V[0][0]);
 	glUniform2f(uLight, lightMode[0], lightMode[1]);
 	glUniformMatrix4fv(uB, 50, GL_FALSE, glm::value_ptr(WBmatrices[0]));
 
@@ -122,11 +118,13 @@ void Skin::draw(GLuint shaderProgram)
 
 void Skin::update(float phi, int flag)
 {
+	// Update joints
 	for (auto joint : *jointsPtr)
 	{
 		WBmatrices[joint->id] = joint->worldM * glm::inverse(Bmatrices[joint->id]);
 	}
 
+	// Update morphed values
 	for (int i = 0; i < vertices.size(); i++)
 	{
 		Vertex* V = vertices[i];
@@ -135,27 +133,19 @@ void Skin::update(float phi, int flag)
 			positions[i] = V->p + phi * V->vDelta;
 			normals[i] = V->n + phi * V->nDelta;
 		}
-		//positions[i] = getDeform(i, 0, phi);
-		//normals[i] = getDeform(i, 1, phi);
 	}
-	//cout << phi << endl;
+
 	glBindVertexArray(VAO);
 
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO_p);
 	glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(glm::vec3), positions.data(), GL_STATIC_DRAW);
-
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (GLvoid*)0);
-	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)0);
 
-	glBindBuffer(GL_ARRAY_BUFFER, VBO2);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO_n);
 	glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), normals.data(), GL_STATIC_DRAW);
-
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (GLvoid*)0);
-
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
@@ -173,51 +163,14 @@ void Skin::print()
 {
 	cout << "# vertices: " << vertices.size() << endl;
 	cout << "# faces: " << faces.size() << endl;
-	
 	cout << "Test weights: " << vertices[0]->jointId[0] << " " << vertices[0]->jointW[0] << endl;
-
 	cout << "# Bmatrices: " << Bmatrices.size() << endl;
-	//cout << Bmatrices[1][0][0] << " " << Bmatrices[1][0][1] << endl;
 
 }
 
 void Skin::setJointsPtr(vector<Joint*>* ptr)
 {
 	jointsPtr = ptr;
-}
-
-glm::vec3 Skin::getDeform(int id, bool normalize, float phi)
-{
-	Vertex* V = vertices[id];
-	glm::mat4 M(0.0f);
-	glm::vec4 tmp(0.0f, 0.0f, 0.0f, 0.0f);
-
-	for (int i = 0; i < 4; i++)
-	{
-		float w = V->jointW[i];
-		int jointId = V->jointId[i];
-		Joint* J = jointsPtr->at(jointId);
-		//glm::mat4 W = J->worldM;
-		//glm::mat4 B = Bmatrices[jointId];
-
-		//M += w * W * glm::inverse(B);
-		M += w * WBmatrices[jointId];
-		//M += w * W * glm::transpose(glm::inverse(B));
-	}
-
-
-	if (normalize == 1)
-	{
-		glm::vec3 result = M * glm::vec4(V->n + phi * V->nDelta, 0.0f);
-		//cout << "n orig: " << result[0] << " " << result[1] << " " << result[2] << endl;
-		return glm::normalize(result);
-	}
-	else
-	{
-		glm::vec3 result = M * glm::vec4(V->p + phi * V->vDelta, 1.0f);
-		//cout << "p : " << result[0] << " " << result[1] << " " << result[2] << endl;
-		return result;
-	}
 }
 
 GLuint Skin::loadBMP_custom(const char * imagepath)

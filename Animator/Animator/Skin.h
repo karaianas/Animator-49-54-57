@@ -32,8 +32,9 @@ public:
 	vector<glm::vec3> normals;
 	vector<GLuint> indices;
 	vector<glm::vec2> texcoords;
-	GLuint VBO, VBO2, VBO3, VAO, EBO;
-	GLuint uProjection, uModel, uView, uLight;
+	GLuint VBO_p, VBO_n, VBO_t, VAO, EBO;
+	GLuint uPV;
+	GLuint uModel, uLight;
 	GLuint texture, uTexture;
 	//GLuint uColor;
 
@@ -51,7 +52,6 @@ public:
 
 	void print();
 	void setJointsPtr(vector<Joint*>* ptr);
-	glm::vec3 getDeform(int id, bool normalize, float phi);
 
 	//ref: http://www.opengl-tutorial.org/beginners-tutorials/tutorial-5-a-textured-cube/
 	GLuint loadBMP_custom(const char * imagepath);

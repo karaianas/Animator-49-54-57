@@ -1,7 +1,7 @@
 #version 330 core
 
 in vec3 sampleExtraOutput;
-in vec3 P;
+//in vec3 P;
 in vec3 N;
 in vec2 lights;
 

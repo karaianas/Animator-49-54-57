@@ -37,7 +37,7 @@ public:
 
 	// These variables are needed for the shader program
 	GLuint VBO, VAO, EBO, VBO2;
-	GLuint uProjection, uModel, uView;
+	GLuint uPV, uModel;
 	GLuint uColor, uLight;
 };
 

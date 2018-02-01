@@ -2,7 +2,7 @@
 
 uniform sampler2D textureSampler;
 
-in vec3 P;
+//in vec3 P;
 in vec3 N;
 in vec2 T;
 in vec2 lights;

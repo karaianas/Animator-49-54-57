@@ -74,7 +74,7 @@ int main(void)
 {
 	// Create the GLFW window
 	//window = Window::create_window(640, 480);
-	window = Window::create_window(720, 640);
+	window = Window::create_window(960, 960);
 	// Print OpenGL and GLSL versions
 	print_versions();
 	// Setup callbacks
