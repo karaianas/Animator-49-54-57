@@ -6,7 +6,8 @@ layout (location = 2) in vec2 texcoords;
 layout (location = 3) in vec4 index;
 layout (location = 4) in vec4 weight;
 
-uniform mat4 viewProjection;
+uniform mat4 MVP;
+uniform mat4 itM;
 uniform mat4 model;
 uniform vec3 color;
 uniform vec2 light;
@@ -29,9 +30,9 @@ void main()
 		newN += weight[i] * Bmatrices[id] * vec4(normal, 0.0f);
 	}
 
-	gl_Position =  viewProjection * model * vec4(newP.x, newP.y, newP.z, 1.0);
+	gl_Position =  MVP * vec4(newP.x, newP.y, newP.z, 1.0);
 	//P = vec3(model * vec4(position, 1.0f));
-	N = mat3(transpose(inverse(model))) * normalize(vec3(newN));
+	N = mat3(itM) * normalize(vec3(newN));
 	lights = light;
 	T = texcoords;
 }

@@ -33,7 +33,7 @@ public:
 	vector<GLuint> indices;
 	vector<glm::vec2> texcoords;
 	GLuint VBO_p, VBO_n, VBO_t, VAO, EBO;
-	GLuint uPV;
+	GLuint uMVP, uITM;
 	GLuint uModel, uLight;
 	GLuint texture, uTexture;
 	//GLuint uColor;

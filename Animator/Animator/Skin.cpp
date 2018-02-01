@@ -27,8 +27,6 @@ void Skin::testZone()
 		jIndices.push_back(vertex->jointId);
 		jWeights.push_back(vertex->jointW);
 	}
-
-	//cout << "Index size: " << jIndices.size() << " Weights size: " << jWeights.size() << endl;
 }
 
 void Skin::init(vector<Joint*>* ptr)
@@ -50,25 +48,21 @@ void Skin::init(vector<Joint*>* ptr)
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO_p);
 	glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(glm::vec3), positions.data(), GL_STATIC_DRAW);
-
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (GLvoid*)0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO_n);
 	glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), normals.data(), GL_STATIC_DRAW);
-
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (GLvoid*)0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO_i);
 	glBufferData(GL_ARRAY_BUFFER, jIndices.size() * sizeof(glm::vec4), jIndices.data(), GL_STATIC_DRAW);
-
 	glEnableVertexAttribArray(3);
 	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (GLvoid*)0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO_w);
 	glBufferData(GL_ARRAY_BUFFER, jWeights.size() * sizeof(glm::vec4), jWeights.data(), GL_STATIC_DRAW);
-
 	glEnableVertexAttribArray(4);
 	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (GLvoid*)0);
 
@@ -99,14 +93,17 @@ void Skin::draw(GLuint shaderProgram)
 		glBindTexture(GL_TEXTURE_2D, texture);
 		//glUniform1i(uTexture, 0);
 	}
+	glm::mat4 MVP = Window::P * Window::V * worldM;
+	glm::mat4 ITM = glm::transpose(glm::inverse(worldM));
 
-	uPV = glGetUniformLocation(shaderProgram, "viewProjection");
+	uMVP = glGetUniformLocation(shaderProgram, "MVP");
+	uITM = glGetUniformLocation(shaderProgram, "itM");
 	uModel = glGetUniformLocation(shaderProgram, "model");
 	uLight = glGetUniformLocation(shaderProgram, "light");
 	uB = glGetUniformLocation(shaderProgram, "Bmatrices[0]");
 
-	glm::mat4 PV = Window::P * Window::V;
-	glUniformMatrix4fv(uPV, 1, GL_FALSE, &PV[0][0]);
+	glUniformMatrix4fv(uMVP, 1, GL_FALSE, &MVP[0][0]);
+	glUniformMatrix4fv(uITM, 1, GL_FALSE, &ITM[0][0]);
 	glUniformMatrix4fv(uModel, 1, GL_FALSE, &worldM[0][0]);
 	glUniform2f(uLight, lightMode[0], lightMode[1]);
 	glUniformMatrix4fv(uB, 50, GL_FALSE, glm::value_ptr(WBmatrices[0]));

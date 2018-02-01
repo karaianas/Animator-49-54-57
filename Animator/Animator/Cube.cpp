@@ -55,15 +55,15 @@ Cube::~Cube()
 void Cube::draw(GLuint shaderProgram, glm::mat4 M, glm::vec3 rgb)
 {
 	worldM = M;
-	glm::mat4 PV = Window::P * Window::V;
+	glm::mat4 MVP = Window::P * Window::V * worldM;
 
-	uPV = glGetUniformLocation(shaderProgram, "viewProjection");
+	uMVP = glGetUniformLocation(shaderProgram, "MVP");
 	uModel = glGetUniformLocation(shaderProgram, "model");
 	uColor = glGetUniformLocation(shaderProgram, "color");
 	uLight = glGetUniformLocation(shaderProgram, "light");
 
 	// Now send these values to the shader program
-	glUniformMatrix4fv(uPV, 1, GL_FALSE, &PV[0][0]);
+	glUniformMatrix4fv(uMVP, 1, GL_FALSE, &MVP[0][0]);
 	glUniformMatrix4fv(uModel, 1, GL_FALSE, &worldM[0][0]);
 	glUniform3f(uColor, rgb[0], rgb[1], rgb[2]);
 	glUniform2f(uLight, lightMode[0], lightMode[1]);
