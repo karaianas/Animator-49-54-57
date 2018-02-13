@@ -184,7 +184,7 @@ void Model::updateJointXYZ(int id, glm::vec3 angleStep)
 {
 	Joint* selected = allJoints[id];
 
-	selected->setUpdate(angleStep);
+	selected->animUpdate(angleStep);
 
 	if (selected->parent)
 		calcWorldM(selected, selected->parent->worldM);

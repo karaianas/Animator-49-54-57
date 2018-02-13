@@ -31,3 +31,7 @@ typedef unsigned int uint;
 #include <iostream>
 #include <algorithm>
 
+#include <fstream>
+#include <string>
+#include <sstream>
+

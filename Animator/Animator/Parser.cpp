@@ -313,72 +313,6 @@ int  Parser::readMorph(const char * filepath, Skin* skin, int flag)
 	return 0;
 }
 
-Animation* Parser::readAnim(const char * filepath)
-{
-	ifstream file(filepath);
-	string line;
-
-	if (!file)
-	{
-		cout << "Cannot open input anim file.\n" << endl;
-		return nullptr;
-	}
-
-	Animation* A = new Animation();
-	Channel* curr = new Channel(-1, -1);
-	string w0, w1, w2, w3;
-
-	// Read line by line
-	for (line; getline(file, line);)
-	{
-		istringstream iss(line);
-
-		string word;
-		iss >> word;
-
-		if (word == "range")
-		{
-			iss >> w0 >> w1;
-			A->SetRange(stof(w0), stof(w1));
-		}
-		else if (word == "numchannels")
-		{
-			iss >> w0;
-			A->numChannels = stoi(w0);
-		}
-		else if (word == "channel")
-		{
-			getline(file, line);
-			istringstream iss(line);
-			iss >> w0 >> w1 >> w2;
-			glm::vec2 rules = processAnimKeyword(w1, w2, 0);
-			curr = A->AddChannel(rules[0], rules[1]);
-		}
-		else if (word == "keys")
-		{
-			iss >> w0;
-			int numKeys = stoi(w0);
-
-			// Add keyframes to the current channel
-			for (int i = 0; i < numKeys; i++)
-			{
-				getline(file, line);
-				istringstream iss(line);
-
-				iss >> w0 >> w1 >> w2 >> w3;
-				glm::vec2 rules = processAnimKeyword(w2, w3, 1);
-				curr->AddKeyframe(stof(w0), stof(w1), rules[0], rules[1]);
-			}
-		}
-	}
-
-	// Precomputation
-	for(auto channel: A->channels)	
-		channel->Precompute();
-
-	return A;
-}
-
 glm::vec2 Parser::processSkinKeyword(string word, int num)
 {
 	for (int i = 0; i < skinKeywords.size(); i++)
@@ -391,56 +325,6 @@ glm::vec2 Parser::processSkinKeyword(string word, int num)
 				return glm::vec2(i, num);
 	}
 	return glm::vec2(-1, 0);
-}
-
-glm::vec2 Parser::processAnimKeyword(string word0, string word1, int num)
-{
-	glm::vec2 numbers;
-
-	// Extrapolation rule
-	if (num == 0)
-	{
-		if (word0 == "constant")
-			numbers[0] = 0;
-		else if (word0 == "cycle")
-			numbers[0] = 1;
-		else if (word0 == "cycle_offset")
-			numbers[0] = 2;
-		else
-			numbers[0] = -1;
-
-		if (word1 == "constant")
-			numbers[1] = 0;
-		else if (word1 == "cycle")
-			numbers[1] = 1;
-		else if (word1 == "cycle_offset")
-			numbers[1] = 2;
-		else
-			numbers[1] = -1;
-	}
-	// Tanget rule
-	else if (num == 1)
-	{
-		if (word0 == "flat")
-			numbers[0] = 0;
-		else if (word0 == "linear")
-			numbers[0] = 1;
-		else if (word0 == "smooth")
-			numbers[0] = 2;
-		else
-			numbers[0] = -1;
-
-		if (word1 == "flat")
-			numbers[1] = 0;
-		else if (word1 == "linear")
-			numbers[1] = 1;
-		else if (word1 == "smooth")
-			numbers[1] = 2;
-		else
-			numbers[1] = -1;
-	}
-
-	return numbers;
 }
 
 void Parser::vec2matConverter(Skin * skin)

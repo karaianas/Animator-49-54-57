@@ -40,7 +40,7 @@ public:
 	void draw(GLuint program, Cube* cube, glm::mat4 M);
 	void update(float angle_step, int axis);
 	void IKupdate(glm::vec3 angle);
-	void setUpdate(glm::vec3 angle);
+	void animUpdate(glm::vec3 angle);
 
 	void addChild(Joint * child);
 	void checkValid();

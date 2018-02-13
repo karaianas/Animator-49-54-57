@@ -71,7 +71,7 @@ void Joint::IKupdate(glm::vec3 angle)
 	localA += angle;
 }
 
-void Joint::setUpdate(glm::vec3 angle)
+void Joint::animUpdate(glm::vec3 angle)
 {
 	glm::mat4 R_x = glm::mat4();
 	glm::mat4 R_y = glm::mat4();
@@ -91,7 +91,7 @@ void Joint::setUpdate(glm::vec3 angle)
 	glm::vec4 temp = localM[3];
 	localM = R_z * R_y * R_x;
 	localM[3] = temp;
-	localA += glm::vec3(x, y, z);
+	localA = glm::vec3(x, y, z);
 }
 
 void Joint::addChild(Joint * child)

@@ -129,8 +129,8 @@ void Window::mainMenu()
 void Window::initialize_objects()
 {
 	// Test zone
-	Parser P;
-	A = P.readAnim(".//Resources//anim//wasp_walk.anim.txt");
+	A = new Animation();
+	A->readAnim(".//Resources//anim//wasp_walk.anim.txt");
 	// -----------------
 
 	shaderProgram = LoadShaders(".//Shaders//shader.vert", ".//Shaders//shader.frag");

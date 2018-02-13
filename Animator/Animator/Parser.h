@@ -15,11 +15,6 @@
 #include "Skin.h"
 #include "Vertex.h"
 #include "Face.h"
-#include "Animation.h"
-
-#include <fstream>
-#include <string>
-#include <sstream>
 
 using namespace std;
 
@@ -30,10 +25,8 @@ public:
 
 	Skin* readSkin(const char* filepath);
 	int readMorph(const char* filepath, Skin* skin, int flag);
-	Animation* readAnim(const char* filepath);
 
 	glm::vec2 processSkinKeyword(string word, int num);
-	glm::vec2 processAnimKeyword(string word0, string word2, int num);
 	void vec2matConverter(Skin* skin);
 
 	vector<string> skinKeywords;
