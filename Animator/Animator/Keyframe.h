@@ -14,5 +14,7 @@ public:
 
 	// Flat: 0 Linear: 1 Smooth: 2
 	int iRule, oRule;
+	glm::vec4 coeff;
+	float span;
 	float A, B, C, D; // Cubic coefficients
 };

@@ -371,6 +371,9 @@ void Parser::readAnim(const char * filepath)
 			}
 		}
 	}
+
+	for(auto channel: A.channels)	
+		channel->Precompute();
 }
 
 glm::vec2 Parser::processSkinKeyword(string word, int num)

@@ -18,6 +18,7 @@
 #include "Joint.h"
 #include "Model.h"
 #include "Parser.h"
+#include "Animation.h"
 
 class Window
 {

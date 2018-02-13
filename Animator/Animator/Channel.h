@@ -18,7 +18,7 @@ public:
 	Keyframe* GetLast(int id);
 
 
-	// Constant: 0 Cycle: 1 Cycle_offset: 2
+	// Constant: 0 Cycle: 1 Cycle_offset: 2 
 	int expIn, expOut;
 	vector<Keyframe*> keyframes;
 };
