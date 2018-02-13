@@ -1,0 +1,41 @@
+animation {
+  range 0.000000 4.000000
+  numchannels 72
+  channel {
+    extrapolate constant constant
+    keys 1 {
+      0.000000 0.000000 smooth smooth
+    }
+  }
+  channel {
+    extrapolate constant constant
+    keys 1 {
+      0.000000 0.950000 smooth smooth
+    }
+  }
+  channel {
+    extrapolate cycle_offset cycle_offset
+    keys 2 {
+      0.000000 0.450000 smooth smooth
+      2.000000 -0.450000 smooth smooth
+    }
+  }
+  channel {
+    extrapolate constant constant
+    keys 1 {
+      0.000000 0.000000 smooth smooth
+    }
+  }
+  channel {
+    extrapolate constant constant
+    keys 1 {
+      0.000000 0.000000 smooth smooth
+    }
+  }
+  channel {
+    extrapolate constant constant
+    keys 1 {
+      0.000000 0.000000 smooth smooth
+    }
+  }
+}

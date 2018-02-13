@@ -21,6 +21,7 @@ Joint::Joint()
 
 	scaleM = glm::mat4(1.0f);
 	localA = glm::vec3();
+	
 }
 
 Joint::~Joint()
@@ -53,7 +54,7 @@ void Joint::IKupdate(glm::vec3 angle)
 {
 	glm::mat4 R_x = glm::mat4(); 
 	glm::mat4 R_y = glm::mat4(); 
-	glm::mat4 R_z = glm::mat4(); glm::rotate(angle[2], glm::vec3(0, 0, 1));
+	glm::mat4 R_z = glm::mat4(); //glm::rotate(angle[2], glm::vec3(0, 0, 1));
 
 	float x = localA[0] + angle[0];
 	float y = localA[1] + angle[1];
@@ -64,10 +65,33 @@ void Joint::IKupdate(glm::vec3 angle)
 	if (y >= container[4]->at(0) && y <= container[4]->at(1))
 		R_y = glm::rotate(angle[1], glm::vec3(0, 1, 0));
 	if (z >= container[5]->at(0) && z <= container[5]->at(1))
-		R_z = glm::rotate(angle[2], glm::vec3(0, 1, 0));
+		R_z = glm::rotate(angle[2], glm::vec3(0, 0, 1));
 
 	localM = localM * R_z * R_y * R_x;
 	localA += angle;
+}
+
+void Joint::setUpdate(glm::vec3 angle)
+{
+	glm::mat4 R_x = glm::mat4();
+	glm::mat4 R_y = glm::mat4();
+	glm::mat4 R_z = glm::mat4(); 
+
+	float x = angle[0];
+	float y = angle[1];
+	float z = angle[2];
+
+	if (x >= container[3]->at(0) && x <= container[3]->at(1))
+		R_x = glm::rotate(angle[0], glm::vec3(1, 0, 0));
+	if (y >= container[4]->at(0) && y <= container[4]->at(1))
+		R_y = glm::rotate(angle[1], glm::vec3(0, 1, 0));
+	if (z >= container[5]->at(0) && z <= container[5]->at(1))
+		R_z = glm::rotate(angle[2], glm::vec3(0, 0, 1));
+
+	glm::vec4 temp = localM[3];
+	localM = R_z * R_y * R_x;
+	localM[3] = temp;
+	localA += glm::vec3(x, y, z);
 }
 
 void Joint::addChild(Joint * child)
@@ -82,6 +106,19 @@ void Joint::checkValid()
 		pose.push_back(0.0f);
 		pose.push_back(0.0f);
 		pose.push_back(0.0f);
+	}
+
+	if (boxmin.size() < 3)
+	{
+		boxmin.push_back(-0.1f);
+		boxmin.push_back(-0.1f);
+		boxmin.push_back(-0.1f);
+	}
+	if (boxmax.size() < 3)
+	{
+		boxmax.push_back(0.1f);
+		boxmax.push_back(0.1f);
+		boxmax.push_back(0.1f);
 	}
 
 	for (int i = 3; i <= 5; i++)

@@ -6,6 +6,8 @@ GLint skinProgram;
 
 Cube* point;
 Model* M;
+Animation* A;
+float delta = 0.0f;
 
 // IK solver
 glm::vec3 goal;
@@ -128,7 +130,7 @@ void Window::initialize_objects()
 {
 	// Test zone
 	Parser P;
-	P.readAnim(".//Resources//anim//test.anim.txt");
+	A = P.readAnim(".//Resources//anim//wasp_walk.anim.txt");
 	// -----------------
 
 	shaderProgram = LoadShaders(".//Shaders//shader.vert", ".//Shaders//shader.frag");
@@ -138,8 +140,8 @@ void Window::initialize_objects()
 
 	// By default, read in wasp model
 	mode = 1;
-	M->readSkel(".//Resources//skel//wasp.skel.txt");	
-	M->readSkin(".//Resources//skin//wasp.skin.txt");
+	M->readSkel(".//Resources//skel//wasp2.skel.txt");	
+	M->readSkin(".//Resources//skin//wasp2.skin.txt");
 
 	// For IK purpose
 	goal = glm::vec3(goalRadius * glm::cos(goalAngle), 4, goalRadius * glm::sin(goalAngle));
@@ -287,6 +289,26 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 		if (key == GLFW_KEY_0)
 		{
 			mainMenu();
+		}
+
+		// Animation test
+		if (key == GLFW_KEY_T)
+		{
+			//A->Play(M, -1.0f, -1.0f, 0.02f);
+	
+			delta += 0.1f;
+			for (int i = 1; i < 20; i++)
+			{
+
+				float angleX = A->channels[3 + 3 * i]->Evaluate(delta);
+				float angleY = A->channels[3 + 3 * i + 1]->Evaluate(delta);
+				float angleZ = A->channels[3 + 3 * i + 2]->Evaluate(delta);
+				if (i == 7)
+					cout << delta << ": " << angleX << " " << angleY << " " << angleZ << endl;
+				M->updateJointXYZ(i, glm::vec3(angleX, angleY, angleZ));
+				
+				M->skin->update(phi, 0);
+			}
 		}
 
 		// Skeleton/Skin mode

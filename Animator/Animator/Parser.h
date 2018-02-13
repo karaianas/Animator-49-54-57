@@ -30,7 +30,7 @@ public:
 
 	Skin* readSkin(const char* filepath);
 	int readMorph(const char* filepath, Skin* skin, int flag);
-	void readAnim(const char* filepath);
+	Animation* readAnim(const char* filepath);
 
 	glm::vec2 processSkinKeyword(string word, int num);
 	glm::vec2 processAnimKeyword(string word0, string word2, int num);

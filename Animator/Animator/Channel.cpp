@@ -18,6 +18,7 @@ void Channel::Precompute()
 	ComputeTangents();
 	ComputeHermite();
 
+	/*
 	cout << "-------------" << endl;
 	for (auto keyframe : keyframes)
 	{
@@ -32,6 +33,11 @@ void Channel::Precompute()
 	cout << "value: ";
 	value = Evaluate(1.2f);
 	cout << value << endl;
+
+	cout << "value: ";
+	value = Evaluate(-0.5f);
+	cout << value << endl;
+	*/
 }
 
 void Channel::ComputeTangents()

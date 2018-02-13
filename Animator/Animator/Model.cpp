@@ -180,6 +180,18 @@ void Model::updateJoint(int id, float angleStep, int axis)
 	}
 }
 
+void Model::updateJointXYZ(int id, glm::vec3 angleStep)
+{
+	Joint* selected = allJoints[id];
+
+	selected->setUpdate(angleStep);
+
+	if (selected->parent)
+		calcWorldM(selected, selected->parent->worldM);
+	else
+		calcWorldM(selected, worldM);
+}
+
 int Model::getNNid(glm::vec2 screenpos, glm::mat4 V, glm::mat4 P, int w, int h)
 {
 	for (auto joint : allJoints)

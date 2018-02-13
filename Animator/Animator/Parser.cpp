@@ -313,7 +313,7 @@ int  Parser::readMorph(const char * filepath, Skin* skin, int flag)
 	return 0;
 }
 
-void Parser::readAnim(const char * filepath)
+Animation* Parser::readAnim(const char * filepath)
 {
 	ifstream file(filepath);
 	string line;
@@ -321,11 +321,11 @@ void Parser::readAnim(const char * filepath)
 	if (!file)
 	{
 		cout << "Cannot open input anim file.\n" << endl;
-		return;
+		return nullptr;
 	}
 
+	Animation* A = new Animation();
 	Channel* curr = new Channel(-1, -1);
-	Animation A;
 	string w0, w1, w2, w3;
 
 	// Read line by line
@@ -339,12 +339,12 @@ void Parser::readAnim(const char * filepath)
 		if (word == "range")
 		{
 			iss >> w0 >> w1;
-			A.SetRange(stof(w0), stof(w1));
+			A->SetRange(stof(w0), stof(w1));
 		}
 		else if (word == "numchannels")
 		{
 			iss >> w0;
-			A.numChannels = stoi(w0);
+			A->numChannels = stoi(w0);
 		}
 		else if (word == "channel")
 		{
@@ -352,7 +352,7 @@ void Parser::readAnim(const char * filepath)
 			istringstream iss(line);
 			iss >> w0 >> w1 >> w2;
 			glm::vec2 rules = processAnimKeyword(w1, w2, 0);
-			curr = A.AddChannel(rules[0], rules[1]);
+			curr = A->AddChannel(rules[0], rules[1]);
 		}
 		else if (word == "keys")
 		{
@@ -372,8 +372,11 @@ void Parser::readAnim(const char * filepath)
 		}
 	}
 
-	for(auto channel: A.channels)	
+	// Precomputation
+	for(auto channel: A->channels)	
 		channel->Precompute();
+
+	return A;
 }
 
 glm::vec2 Parser::processSkinKeyword(string word, int num)

@@ -2,7 +2,7 @@ animation {
   range 0.000000 4.000000
   numchannels 1
   channel {
-    extrapolate cycle cycle_offset
+    extrapolate cycle_offset cycle_offset
     keys 4 {
       -0.1 0.4 linear linear
 	0.2 0.7 linear linear
