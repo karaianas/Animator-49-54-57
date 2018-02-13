@@ -15,7 +15,7 @@ public:
 
 	Channel* AddChannel(int expIn, int expOut);
 	void SetRange(float start_, float end_);
-	void Play(Model* M, float s, float e, float delta);
+	void Play(Model* M, float delta);
 
 	float start, end;
 	int numChannels;

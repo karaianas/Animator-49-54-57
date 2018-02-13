@@ -192,6 +192,19 @@ void Model::updateJointXYZ(int id, glm::vec3 angleStep)
 		calcWorldM(selected, worldM);
 }
 
+void Model::updateJointT(int id, glm::vec3 translation)
+{
+	Joint* selected = allJoints[id];
+
+	selected->localM[3] = glm::vec4(translation, 1.0f);
+	//cout << "pos: " << translation[0] << " " << translation[1] << " " << translation[2] << endl;
+
+	if (selected->parent)
+		calcWorldM(selected, selected->parent->worldM);
+	else
+		calcWorldM(selected, worldM);
+}
+
 int Model::getNNid(glm::vec2 screenpos, glm::mat4 V, glm::mat4 P, int w, int h)
 {
 	for (auto joint : allJoints)

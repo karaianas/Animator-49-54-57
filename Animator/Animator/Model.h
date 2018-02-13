@@ -37,6 +37,7 @@ public:
 
 	void updateJoint(int id, float angleStep, int axis);
 	void updateJointXYZ(int id, glm::vec3 angleSetp);
+	void updateJointT(int id, glm::vec3 translation);
 	int getNNid(glm::vec2 screenpos, glm::mat4 V, glm::mat4 P, int w, int h);
 
 	int IKsolver(int id, glm::vec3 goal);// niter, goal boolean

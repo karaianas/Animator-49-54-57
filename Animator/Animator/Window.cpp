@@ -36,7 +36,7 @@ bool wireframe = false;
 //#define FRAGMENT_SHADER_PATH "./shader.frag"
 
 // Default camera parameters
-glm::vec3 cam_pos(0.0f, 0.0f, 5.0f);		// e  | Position of camera
+glm::vec3 cam_pos(0.0f, 0.0f, 7.0f);		// e  | Position of camera
 glm::vec3 cam_look_at(0.0f, 0.0f, 0.0f);	// d  | This is where the camera looks at
 glm::vec3 cam_up(0.0f, 1.0f, 0.0f);			// up | What orientation "up" is
 
@@ -131,7 +131,6 @@ void Window::initialize_objects()
 	// Test zone
 	A = new Animation();
 	A->readAnim(".//Resources//anim//wasp_walk.anim.txt");
-	// -----------------
 
 	shaderProgram = LoadShaders(".//Shaders//shader.vert", ".//Shaders//shader.frag");
 	skinProgram = LoadShaders(".//Shaders//skin.vert", ".//Shaders//skin.frag");
@@ -294,19 +293,16 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 		// Animation test
 		if (key == GLFW_KEY_T)
 		{
-			//A->Play(M, -1.0f, -1.0f, 0.02f);
-	
-			delta += 0.1f;
-			for (int i = 1; i < 20; i++)
+			if (mods == GLFW_MOD_SHIFT)
 			{
-
-				float angleX = A->channels[3 + 3 * i]->Evaluate(delta);
-				float angleY = A->channels[3 + 3 * i + 1]->Evaluate(delta);
-				float angleZ = A->channels[3 + 3 * i + 2]->Evaluate(delta);
-				if (i == 7)
-					cout << delta << ": " << angleX << " " << angleY << " " << angleZ << endl;
-				M->updateJointXYZ(i, glm::vec3(angleX, angleY, angleZ));
-				
+				delta += 0.1f;
+				A->Play(M, delta);
+				M->skin->update(phi, 0);
+			}
+			else
+			{
+				delta -= 0.1f;
+				A->Play(M, delta);
 				M->skin->update(phi, 0);
 			}
 		}

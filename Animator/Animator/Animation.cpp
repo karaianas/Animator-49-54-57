@@ -136,14 +136,22 @@ void Animation::SetRange(float start_, float end_)
 	end = end_;
 }
 
-//void Animation::Play(Model* M, float s, float e, float delta)
-//{
-//	//float angle = channels[3]->Evaluate(delta);
-//	//M->updateJoint(1, angle, 0);
-//
-//	//angle = channels[4]->Evaluate(delta);
-//	//M->updateJoint(1, angle, 1);
-//
-//	//angle = channels[5]->Evaluate(delta);
-//	//M->updateJoint(1, angle, 2);
-//}
+void Animation::Play(Model* M, float delta)
+{
+	// Translation
+	float x = channels[0]->Evaluate(delta);
+	float y = channels[1]->Evaluate(delta);
+	float z = channels[2]->Evaluate(delta);
+	M->updateJointT(0, glm::vec3(x, y, z));
+
+	// Rotation
+	for (int i = 0; i < M->allJoints.size(); i++)
+	{
+
+		float angleX = channels[3 + 3 * i]->Evaluate(delta);
+		float angleY = channels[3 + 3 * i + 1]->Evaluate(delta);
+		float angleZ = channels[3 + 3 * i + 2]->Evaluate(delta);
+	
+		M->updateJointXYZ(i, glm::vec3(angleX, angleY, angleZ));
+	}
+}
