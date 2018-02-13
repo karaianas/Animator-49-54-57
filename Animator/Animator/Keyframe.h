@@ -10,7 +10,7 @@ public:
 	float time;
 	float value;
 	float tangentIn, tangentOut;
-	char ruleIn, ruleOut; // Tangent rules
+	//char ruleIn, ruleOut; // Tangent rules
 
 	// Flat: 0 Linear: 1 Smooth: 2
 	int iRule, oRule;

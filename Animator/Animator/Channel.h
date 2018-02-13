@@ -8,9 +8,14 @@ class Channel {
 public:
 	Channel(int expIn_, int expOut_);
 
-	float Evaluate(float time);
 	void AddKeyframe(float time, float value, int iRule, int oRule);
 	void Precompute();
+	void ComputeTangents();
+	void ComputeHermite();
+	float Evaluate(float time);
+
+	Keyframe* GetNext(int id);
+	Keyframe* GetLast(int id);
 
 
 	// Constant: 0 Cycle: 1 Cycle_offset: 2
