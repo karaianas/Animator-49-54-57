@@ -49,7 +49,11 @@ void Channel::ComputeTangents()
 		{
 			if (id == 0)
 			{
-				keyframe->tangentIn = 0.0f;
+				//keyframe->tangentIn = 0.0f;
+				Keyframe* next = GetNext(id);
+				float den = next->time - keyframe->time;
+				float num = next->value - keyframe->value;
+				keyframe->tangentIn = num / den;
 			}
 			else
 			{
@@ -65,7 +69,11 @@ void Channel::ComputeTangents()
 			// Use linear instead
 			if (id == 0)
 			{
-				keyframe->tangentIn = 0.0f;
+				//keyframe->tangentIn = 0.0f;
+				Keyframe* next = GetNext(id);
+				float den = next->time - keyframe->time;
+				float num = next->value - keyframe->value;
+				keyframe->tangentIn = num / den;
 			}
 			else if (id == keyframes.size() - 1)
 			{
@@ -92,7 +100,11 @@ void Channel::ComputeTangents()
 		{
 			if (id == keyframes.size() - 1)
 			{
-				keyframe->tangentOut = 0.0f;
+				//keyframe->tangentOut = 0.0f;
+				Keyframe* last = GetLast(id);
+				float den = keyframe->time - last->time;
+				float num = keyframe->value - last->value;
+				keyframe->tangentOut = num / den;
 			}
 			else
 			{
@@ -115,7 +127,11 @@ void Channel::ComputeTangents()
 			}
 			else if (id == keyframes.size() - 1)
 			{
-				keyframe->tangentOut = 0.0f;
+				//keyframe->tangentOut = 0.0f;
+				Keyframe* last = GetLast(id);
+				float den = keyframe->time - last->time;
+				float num = keyframe->value - last->value;
+				keyframe->tangentOut = num / den;
 			}
 			else
 			{
