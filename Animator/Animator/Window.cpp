@@ -10,13 +10,14 @@ Model* M;
 
 // Viewport
 bool split = false;
-glm::vec3 cam_pos2(0.0f, 0.0f, 30.0f);
-glm::vec3 cam_look_at2(0.0f, 0.0f, 0.0f);
-glm::vec3 cam_up2(0.0f, 1.0f, 0.0f);
+glm::vec2 range;
+float translateFactor;
+glm::mat4 VP;
 
 // Animation
 Animation* A;
 float delta = 0.0f;
+bool play = false;
 
 // IK solver
 glm::vec3 goal;
@@ -135,11 +136,26 @@ void Window::mainMenu()
 	} while (mode == -1);
 }
 
+void Window::viewportSetUp()
+{
+	glm::vec3 cam_pos2(0.0f, 0.0f, 10.0f);
+	glm::vec3 cam_look_at2(0.0f, 0.0f, 0.0f);
+	glm::vec3 cam_up2(0.0f, 1.0f, 0.0f);
+
+	range = glm::vec2(-10.0f, 10.0f);
+	translateFactor = (range[1] - range[0]) / 3.0f;
+
+	glm::mat4 V_ = glm::lookAt(cam_pos2, cam_look_at2, cam_up2);
+	glm::mat4 P_ = glm::ortho(-11.0f, 11.0f, range[0], range[1], 0.0f, 100.0f);
+	VP = P_ * V_;
+}
+
 void Window::initialize_objects()
 {
 	// Test zone I
 	A = new Animation();
 	A->readAnim(".//Resources//anim//wasp_walk.anim.txt");
+	viewportSetUp();
 	// -------------------------------------------------------
 
 	// Test zone II
@@ -250,6 +266,13 @@ void Window::idle_callback()
 			niter = 0;
 		}
 	}
+
+	if (play)
+	{
+		delta += 0.01f;
+		A->Play(M, delta);
+		M->skin->update(phi, 0);
+	}
 }
 
 void Window::draw()
@@ -287,20 +310,12 @@ void Window::display_callback(GLFWwindow* window)
 	else
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-	// Viewport test
 	if (split)
 	{
-
 		// bottom
-		glm::vec2 range(-10.0f, 10.0f);
-		float translateFactor = (range[1] - range[0]) / 3.0f;
-
-		glm::mat4 V_ = glm::lookAt(cam_pos2, cam_look_at2, cam_up2);
-		glm::mat4 P_ = glm::ortho(-11.0f, 11.0f, range[0], range[1], 0.0f, 100.0f);
-
 		glViewport(0, 0, width, height * 0.5);
 		glUseProgram(graphProgram);
-		A->DisplayChannel(selected, graphProgram, P_ * V_, translateFactor);
+		A->DisplayChannel(selected, graphProgram, VP, translateFactor, delta);
 
 		// left top
 		glViewport(0, height*0.5, width*0.5, height*0.5);
@@ -313,6 +328,7 @@ void Window::display_callback(GLFWwindow* window)
 		M->skin->draw(skinProgram);
 
 		glViewport(0, 0, width, height); //restore default
+
 	}
 	else
 	{
@@ -348,17 +364,31 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 		}
 
 		// Animation test
+		if (key == GLFW_KEY_P)
+		{
+			if (play)
+			{
+				cout << "[Paused]" << endl;
+				play = false;
+			}
+			else
+			{
+				cout << "[Play]" << endl;
+				play = true;
+			}
+		}
+
 		if (key == GLFW_KEY_T)
 		{
 			if (mods == GLFW_MOD_SHIFT)
 			{
-				delta += 0.1f;
+				delta += 0.5f;
 				A->Play(M, delta);
 				M->skin->update(phi, 0);
 			}
 			else
 			{
-				delta -= 0.1f;
+				delta -= 0.5f;
 				A->Play(M, delta);
 				M->skin->update(phi, 0);
 			}

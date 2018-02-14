@@ -6,6 +6,9 @@ Animation::Animation()
 {
 	for (int i = -10; i < 11; i++)
 		vertices_graph.push_back(glm::vec2(i, 0));
+	vertices_graph.push_back(glm::vec2(0.0f, -10.0f));
+	vertices_graph.push_back(glm::vec2(0.0f, 10.0f));
+	size = vertices_graph.size();
 
 	glGenVertexArrays(1, &VAO_graph);
 	glGenBuffers(1, &VBO_graph);
@@ -172,14 +175,14 @@ void Animation::Play(Model* M, float delta)
 	}
 }
 
-void Animation::DisplayChannel(Joint* joint, GLuint shaderProgram, glm::mat4 MVP, float factor)
+void Animation::DisplayChannel(Joint* joint, GLuint shaderProgram, glm::mat4 MVP, float factor, float time)
 {
 	GLuint uMVP = glGetUniformLocation(shaderProgram, "MVP");
 	GLuint uChannel = glGetUniformLocation(shaderProgram, "channel");
 
 	if (joint)
 	{
-		glm::vec3 current = joint->localA;
+		//glm::vec3 current = joint->localA;
 
 		for (int i = 0; i < 3; i++)
 		{
@@ -190,8 +193,19 @@ void Animation::DisplayChannel(Joint* joint, GLuint shaderProgram, glm::mat4 MVP
 
 			// Draw graph
 			glBindVertexArray(VAO_graph);
+			glPointSize(0.05f);
 			glUniform3f(uChannel, 1.0f, 1.0f, 1.0f);
-			glDrawArrays(GL_LINE_STRIP, 0, vertices_graph.size());
+			glDrawArrays(GL_LINE_STRIP, 0, vertices_graph.size() - 2);
+
+			// Draw time
+			vertices_graph[size - 1].x = time;
+			vertices_graph[size - 2].x = time;
+			glBindVertexArray(VAO_graph);
+			glBindBuffer(GL_ARRAY_BUFFER, VBO_graph);
+			glBufferData(GL_ARRAY_BUFFER, vertices_graph.size() * sizeof(glm::vec2), vertices_graph.data(), GL_STATIC_DRAW);
+			glPointSize(0.05f);
+			glUniform3f(uChannel, 1.0f, 1.0f, 1.0f);
+			glDrawArrays(GL_LINES, vertices_graph.size() - 2, 2);
 			glBindVertexArray(0);
 
 			// Draw channel

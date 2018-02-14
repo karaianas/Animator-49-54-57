@@ -29,7 +29,7 @@ public:
 	void SetRange(float start_, float end_);
 	void Play(Model* M, float delta);
 
-	void DisplayChannel(Joint* joint, GLuint shaderProgram, glm::mat4 MVP, float factor);
+	void DisplayChannel(Joint* joint, GLuint shaderProgram, glm::mat4 MVP, float factor, float time);
 
 	float start, end;
 	int numChannels;
@@ -39,6 +39,8 @@ public:
 	GLuint VAO_graph;
 	GLuint VBO_graph;
 	vector<glm::vec2> vertices_graph;
+
+	int size;
 
 private:
 

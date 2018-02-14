@@ -39,8 +39,9 @@ public:
 	vector<Keyframe*> keyframes;
 
 	// For drawing
-	GLuint VAO_inter, VAO_key;
-	GLuint VBO_inter, VBO_key;
+	GLuint VAO_inter, VAO_key, VAO_tan;
+	GLuint VBO_inter, VBO_key, VBO_tan;
 	vector<glm::vec2> vertices_inter;
 	vector<glm::vec2> vertices_key;
+	vector<glm::vec2> vertices_tan;
 };

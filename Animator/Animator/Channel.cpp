@@ -10,6 +10,9 @@ Channel::Channel(int expIn_, int expOut_)
 
 	glGenVertexArrays(1, &VAO_key);
 	glGenBuffers(1, &VBO_key);
+
+	glGenVertexArrays(1, &VAO_tan);
+	glGenBuffers(1, &VBO_tan);
 }
 
 void Channel::AddKeyframe(float time, float value, int iRule, int oRule)
@@ -165,7 +168,15 @@ void Channel::DrawUpdate()
 
 	for (auto key : keyframes)
 	{
-		vertices_key.push_back(glm::vec2(key->time, key->value));
+		glm::vec2 val(key->time, key->value);
+		vertices_key.push_back(val);
+
+		vertices_tan.push_back(val - 0.3f * glm::normalize(glm::vec2(1, key->tangentIn)));
+		vertices_tan.push_back(val);
+
+		vertices_tan.push_back(val);
+		vertices_tan.push_back(val + 0.3f * glm::normalize(glm::vec2(1, key->tangentOut)));
+
 	}
 
 	glBindVertexArray(VAO_inter);
@@ -183,6 +194,17 @@ void Channel::DrawUpdate()
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO_key);
 	glBufferData(GL_ARRAY_BUFFER, vertices_key.size() * sizeof(glm::vec2), vertices_key.data(), GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (GLvoid*)0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+
+	glBindVertexArray(VAO_tan);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO_tan);
+	glBufferData(GL_ARRAY_BUFFER, vertices_tan.size() * sizeof(glm::vec2), vertices_tan.data(), GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (GLvoid*)0);
@@ -252,15 +274,27 @@ void Channel::Draw(GLuint shaderProgram, glm::mat4 MVP, int DOF)
 
 	// lines: dotted
 	glm::vec3 color(0.0f);
+
+	// Curve
 	color[DOF] = 1.0f;
 	glBindVertexArray(VAO_inter);
+	glPointSize(0.2f);
 	glUniform3f(uChannel, color[0], color[1], color[2]);
 	glDrawArrays(GL_LINE_STRIP, 0, vertices_inter.size());
 	glBindVertexArray(0);
 
+	// Keyframes
 	glBindVertexArray(VAO_key);
+	glPointSize(5.0f);
 	glUniform3f(uChannel, 1.0f, 1.0f, 1.0f);
 	glDrawArrays(GL_POINTS, 0, vertices_key.size());
+	glBindVertexArray(0);
+
+	// Tangents
+	glBindVertexArray(VAO_tan);
+	glPointSize(0.05f);
+	glUniform3f(uChannel, 1.0f, 1.0f, 1.0f);
+	glDrawArrays(GL_LINES, 0, vertices_tan.size());
 	glBindVertexArray(0);
 
 }
