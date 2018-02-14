@@ -281,6 +281,7 @@ void Window::display_callback(GLFWwindow* window)
 	// Viewport test
 	if (split)
 	{
+		/*
 		// left bottom
 		glViewport(0, 0, width*0.5, height*0.5);
 		draw();
@@ -288,45 +289,28 @@ void Window::display_callback(GLFWwindow* window)
 		// right bottom
 		glViewport(width*0.5, 0, width*0.5, height*0.5);
 		draw();
+		*/
+
+		// bottom
+		glViewport(0, 0, width, height*0.5);
+		//draw();
+		A->DisplayChannel(M, selectedInd);
 
 		// left top
 		glViewport(0, height*0.5, width*0.5, height*0.5);
-		draw();
+		glUseProgram(shaderProgram);
+		M->draw(shaderProgram);
 
 		// right top
 		glViewport(width*0.5, height*0.5, width*0.5, height*0.5);
-		draw();
+		glUseProgram(skinProgram);
+		M->skin->draw(skinProgram);
 
 		glViewport(0, 0, width, height); //restore default
 	}
 	else
 	{
 		draw();
-	}
-
-
-	//// Skeleton mode
-	//if (mode == 0)
-	//{
-	//	glUseProgram(shaderProgram);
-	//	M->draw(shaderProgram);
-	//}
-	//else if (mode == 1)
-	//{
-	//	glUseProgram(skinProgram);
-	//	M->skin->draw(skinProgram);
-	//}
-	//else
-	//{
-	//}
-
-
-	if (IKmode)
-	{
-		glUseProgram(shaderProgram);
-		//point->draw(shaderProgram, glm::mat4(1.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-		glm::mat4 T = glm::translate(glm::mat4(1.0f), goal) * glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.1f));
-		point->draw(shaderProgram, T, glm::vec3(0.0f, 1.0f, 0.0f));
 	}
 
 	glfwPollEvents();

@@ -17,6 +17,8 @@ public:
 	void SetRange(float start_, float end_);
 	void Play(Model* M, float delta);
 
+	void DisplayChannel(Model* M, int id);
+
 	float start, end;
 	int numChannels;
 	vector<Channel*> channels;

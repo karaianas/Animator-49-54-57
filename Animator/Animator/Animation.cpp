@@ -155,3 +155,14 @@ void Animation::Play(Model* M, float delta)
 		M->updateJointXYZ(i, glm::vec3(angleX, angleY, angleZ));
 	}
 }
+
+void Animation::DisplayChannel(Model * M, int id)
+{
+	// This will be used for marking the current position
+	if (id >= 0)
+	{
+		glm::vec3 current = M->allJoints[id]->localA;
+		cout << current[0] << " " << current[1] << " " << current[2] << endl;
+	}
+
+}
