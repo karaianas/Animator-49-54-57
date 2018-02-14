@@ -1,4 +1,17 @@
 #pragma once
+
+#define GLFW_INCLUDE_GLEXT
+#ifdef __APPLE__
+#define GLFW_INCLUDE_GLCOREARB
+#else
+#include <GL/glew.h>
+#endif
+#include <GLFW/glfw3.h>
+// Use of degrees is deprecated. Use radians instead.
+#ifndef GLM_FORCE_RADIANS
+#define GLM_FORCE_RADIANS
+#endif
+
 #include "Core.h"
 #include "Keyframe.h"
 
@@ -14,6 +27,8 @@ public:
 	void ComputeHermite();
 	float Evaluate(float time);
 
+	void Draw(GLuint shaderProgram, glm::mat4 M, glm::mat4 MVP);
+
 	Keyframe* GetNext(int id);
 	Keyframe* GetLast(int id);
 
@@ -21,4 +36,10 @@ public:
 	// Constant: 0 Cycle: 1 Cycle_offset: 2 
 	int expIn, expOut;
 	vector<Keyframe*> keyframes;
+
+	// For drawing
+	GLuint VAO_graph, VAO_inter;
+	GLuint VBO_graph, VBO_inter;
+	vector<glm::vec2> vertices_graph;
+	vector<glm::vec2> vertices_inter;
 };

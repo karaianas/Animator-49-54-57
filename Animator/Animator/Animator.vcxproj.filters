@@ -125,5 +125,11 @@
     <None Include="Shaders\skinTex.vert">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="Shaders\graph.frag">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="Shaders\graph.vert">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

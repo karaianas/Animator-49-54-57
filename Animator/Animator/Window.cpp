@@ -1,14 +1,18 @@
 #include "window.h"
 
-const char* window_title = "CSE169_Project02";
+const char* window_title = "CSE169_Project03";
 GLint shaderProgram;
 GLint skinProgram;
+GLint graphProgram;
 
 Cube* point;
 Model* M;
 
 // Viewport
 bool split = false;
+glm::vec3 cam_pos2(0.0f, 0.0f, 20.0f);
+glm::vec3 cam_look_at2(0.0f, 0.0f, 0.0f);
+glm::vec3 cam_up2(0.0f, 1.0f, 0.0f);
 
 // Animation
 Animation* A;
@@ -133,9 +137,14 @@ void Window::mainMenu()
 
 void Window::initialize_objects()
 {
-	// Test zone
+	// Test zone I
 	A = new Animation();
 	A->readAnim(".//Resources//anim//wasp_walk.anim.txt");
+	// -------------------------------------------------------
+
+	// Test zone II
+	graphProgram = LoadShaders(".//Shaders//graph.vert", ".//Shaders//graph.frag");
+	// -------------------------------------------------------
 
 	shaderProgram = LoadShaders(".//Shaders//shader.vert", ".//Shaders//shader.frag");
 	skinProgram = LoadShaders(".//Shaders//skin.vert", ".//Shaders//skin.frag");
@@ -294,7 +303,13 @@ void Window::display_callback(GLFWwindow* window)
 		// bottom
 		glViewport(0, 0, width, height*0.5);
 		//draw();
-		A->DisplayChannel(M, selectedInd);
+		//A->DisplayChannel(M, selectedInd);
+		glm::mat4 I = glm::mat4(1.0f);
+		glm::mat4 V_ = glm::lookAt(cam_pos2, cam_look_at2, cam_up2);
+		glm::mat4 P_ = glm::perspective(45.0f, (float)width / (float)height, 0.1f, 100.0f);
+
+		glUseProgram(graphProgram);
+		A->channels[24]->Draw(graphProgram, I, P_ * V_ * I);
 
 		// left top
 		glViewport(0, height*0.5, width*0.5, height*0.5);

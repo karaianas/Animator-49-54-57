@@ -149,6 +149,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Shaders\graph.frag" />
+    <None Include="Shaders\graph.vert" />
     <None Include="Shaders\shader.frag" />
     <None Include="Shaders\shader.vert" />
     <None Include="shaders\skin.frag" />

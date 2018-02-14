@@ -4,6 +4,26 @@ Channel::Channel(int expIn_, int expOut_)
 {
 	expIn = expIn_;
 	expOut = expOut_;
+
+	for (int i = -10; i < 11; i++)
+	{
+		vertices_graph.push_back(glm::vec2(i, 1));
+	}
+
+	glGenVertexArrays(1, &VAO_graph);
+	glGenBuffers(1, &VBO_graph);
+
+	glBindVertexArray(VAO_graph);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO_graph);
+	glBufferData(GL_ARRAY_BUFFER, vertices_graph.size() * sizeof(glm::vec2), vertices_graph.data(), GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (GLvoid*)0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+
 }
 
 void Channel::AddKeyframe(float time, float value, int iRule, int oRule)
@@ -18,26 +38,26 @@ void Channel::Precompute()
 	ComputeTangents();
 	ComputeHermite();
 
-	/*
-	cout << "-------------" << endl;
-	for (auto keyframe : keyframes)
+	// Test zone
+	for (float t = -10.0f; t <= 10.0f; t += 0.1f)
 	{
-		cout << keyframe->tangentIn << " " << keyframe->tangentOut << endl;
-		//cout << keyframe->coeff[0] << " " << keyframe->coeff[1] << " " << keyframe->coeff[2] << " " << keyframe->coeff[3] << endl;
+		vertices_inter.push_back(glm::vec2(t, Evaluate(t)));
+		//cout << Evaluate(t) << endl;
 	}
 
-	cout << "value: ";
-	float value = Evaluate(0.1f);
-	cout << value << endl;
+	glGenVertexArrays(1, &VAO_inter);
+	glGenBuffers(1, &VBO_inter);
 
-	cout << "value: ";
-	value = Evaluate(1.2f);
-	cout << value << endl;
+	glBindVertexArray(VAO_inter);
 
-	cout << "value: ";
-	value = Evaluate(-0.5f);
-	cout << value << endl;
-	*/
+	glBindBuffer(GL_ARRAY_BUFFER, VBO_inter);
+	glBufferData(GL_ARRAY_BUFFER, vertices_inter.size() * sizeof(glm::vec2), vertices_inter.data(), GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (GLvoid*)0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
 }
 
 void Channel::ComputeTangents()
@@ -218,6 +238,30 @@ float Channel::Evaluate(float time)
 			return glm::dot(U, keyframe->coeff) + x * offset;
 		}
 	}
+}
+
+void Channel::Draw(GLuint shaderProgram, glm::mat4 M, glm::mat4 MVP)
+{
+	GLuint uMVP = glGetUniformLocation(shaderProgram, "MVP");
+	GLuint uModel = glGetUniformLocation(shaderProgram, "model");
+	GLuint uChannel = glGetUniformLocation(shaderProgram, "channel");
+
+	// Now send these values to the shader program
+	glUniformMatrix4fv(uMVP, 1, GL_FALSE, &MVP[0][0]);
+	glUniformMatrix4fv(uModel, 1, GL_FALSE, &M[0][0]);
+	glUniform3f(uChannel, 1.0f, 1.0f, 1.0f);
+
+	// Now draw. We simply need to bind the VAO associated with it.
+	glBindVertexArray(VAO_graph);
+	glDrawArrays(GL_LINE_STRIP, 0, vertices_graph.size());
+	// Unbind the VAO when we're done so we don't accidentally draw extra stuff or tamper with its bound buffers
+	glBindVertexArray(0);
+
+	glBindVertexArray(VAO_inter);
+	// lines: dotted
+	glDrawArrays(GL_LINE_STRIP, 0, vertices_inter.size());
+	glBindVertexArray(0);
+
 }
 
 Keyframe * Channel::GetNext(int id)
