@@ -39,10 +39,16 @@ void Channel::Precompute()
 	ComputeHermite();
 
 	// Test zone
+	float scaleFactor = 5.f;
 	for (float t = -10.0f; t <= 10.0f; t += 0.1f)
 	{
-		vertices_inter.push_back(glm::vec2(t, Evaluate(t)));
+		vertices_inter.push_back(glm::vec2(t, Evaluate(t) * scaleFactor));
 		//cout << Evaluate(t) << endl;
+	}
+
+	for (auto key : keyframes)
+	{
+		vertices_key.push_back(glm::vec2(key->time, key->value * scaleFactor));
 	}
 
 	glGenVertexArrays(1, &VAO_inter);
@@ -52,6 +58,20 @@ void Channel::Precompute()
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO_inter);
 	glBufferData(GL_ARRAY_BUFFER, vertices_inter.size() * sizeof(glm::vec2), vertices_inter.data(), GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (GLvoid*)0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+
+	glGenVertexArrays(1, &VAO_key);
+	glGenBuffers(1, &VBO_key);
+
+	glBindVertexArray(VAO_key);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO_key);
+	glBufferData(GL_ARRAY_BUFFER, vertices_key.size() * sizeof(glm::vec2), vertices_key.data(), GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (GLvoid*)0);
@@ -240,7 +260,7 @@ float Channel::Evaluate(float time)
 	}
 }
 
-void Channel::Draw(GLuint shaderProgram, glm::mat4 M, glm::mat4 MVP)
+void Channel::Draw(GLuint shaderProgram, glm::mat4 M, glm::mat4 MVP, int DOF)
 {
 	GLuint uMVP = glGetUniformLocation(shaderProgram, "MVP");
 	GLuint uModel = glGetUniformLocation(shaderProgram, "model");
@@ -249,17 +269,25 @@ void Channel::Draw(GLuint shaderProgram, glm::mat4 M, glm::mat4 MVP)
 	// Now send these values to the shader program
 	glUniformMatrix4fv(uMVP, 1, GL_FALSE, &MVP[0][0]);
 	glUniformMatrix4fv(uModel, 1, GL_FALSE, &M[0][0]);
-	glUniform3f(uChannel, 1.0f, 1.0f, 1.0f);
 
 	// Now draw. We simply need to bind the VAO associated with it.
 	glBindVertexArray(VAO_graph);
+	glUniform3f(uChannel, 1.0f, 1.0f, 1.0f);
 	glDrawArrays(GL_LINE_STRIP, 0, vertices_graph.size());
 	// Unbind the VAO when we're done so we don't accidentally draw extra stuff or tamper with its bound buffers
 	glBindVertexArray(0);
 
+	glm::vec3 color(0.0f);
+	color[DOF] = 1.0f;
 	glBindVertexArray(VAO_inter);
 	// lines: dotted
+	glUniform3f(uChannel, color[0], color[1], color[2]);
 	glDrawArrays(GL_LINE_STRIP, 0, vertices_inter.size());
+	glBindVertexArray(0);
+
+	glBindVertexArray(VAO_key);
+	glUniform3f(uChannel, 1.0f, 1.0f, 1.0f);
+	glDrawArrays(GL_POINTS, 0, vertices_key.size());
 	glBindVertexArray(0);
 
 }

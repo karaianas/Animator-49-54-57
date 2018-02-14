@@ -156,13 +156,17 @@ void Animation::Play(Model* M, float delta)
 	}
 }
 
-void Animation::DisplayChannel(Model * M, int id)
+void Animation::DisplayChannel(int mode, Model* model, int id, GLuint shaderProgram, glm::mat4 M, glm::mat4 MVP)
 {
 	// This will be used for marking the current position
 	if (id >= 0)
 	{
-		glm::vec3 current = M->allJoints[id]->localA;
-		cout << current[0] << " " << current[1] << " " << current[2] << endl;
+		Joint* j = model->allJoints[id];
+		glm::vec3 current = j->localA;
+		//cout << current[0] << " " << current[1] << " " << current[2] << endl;
+
+		int chNum = 3 + 3 * id + mode;
+		channels[chNum]->Draw(shaderProgram, M, MVP, mode);
 	}
 
 }

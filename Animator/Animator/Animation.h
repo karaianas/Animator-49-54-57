@@ -17,7 +17,7 @@ public:
 	void SetRange(float start_, float end_);
 	void Play(Model* M, float delta);
 
-	void DisplayChannel(Model* M, int id);
+	void DisplayChannel(int mode, Model* model, int id, GLuint shaderProgram, glm::mat4 M, glm::mat4 MVP);
 
 	float start, end;
 	int numChannels;

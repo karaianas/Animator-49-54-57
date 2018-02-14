@@ -27,7 +27,7 @@ public:
 	void ComputeHermite();
 	float Evaluate(float time);
 
-	void Draw(GLuint shaderProgram, glm::mat4 M, glm::mat4 MVP);
+	void Draw(GLuint shaderProgram, glm::mat4 M, glm::mat4 MVP, int DOF);
 
 	Keyframe* GetNext(int id);
 	Keyframe* GetLast(int id);
@@ -38,8 +38,9 @@ public:
 	vector<Keyframe*> keyframes;
 
 	// For drawing
-	GLuint VAO_graph, VAO_inter;
-	GLuint VBO_graph, VBO_inter;
+	GLuint VAO_graph, VAO_inter, VAO_key;
+	GLuint VBO_graph, VBO_inter, VBO_key;
 	vector<glm::vec2> vertices_graph;
 	vector<glm::vec2> vertices_inter;
+	vector<glm::vec2> vertices_key;
 };
