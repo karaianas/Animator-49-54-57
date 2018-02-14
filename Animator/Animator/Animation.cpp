@@ -172,36 +172,30 @@ void Animation::Play(Model* M, float delta)
 	}
 }
 
-void Animation::DisplayChannel(Joint* joint, GLuint shaderProgram, glm::mat4 MVP, int DOF)
+void Animation::DisplayChannel(Joint* joint, GLuint shaderProgram, glm::mat4 MVP, float factor)
 {
 	GLuint uMVP = glGetUniformLocation(shaderProgram, "MVP");
 	GLuint uChannel = glGetUniformLocation(shaderProgram, "channel");
-
-	// Now send these values to the shader program
-	glUniformMatrix4fv(uMVP, 1, GL_FALSE, &MVP[0][0]);
-
-	// Draw graph
-	glBindVertexArray(VAO_graph);
-	glUniform3f(uChannel, 1.0f, 1.0f, 1.0f);
-	glDrawArrays(GL_LINE_STRIP, 0, vertices_graph.size());
-	glBindVertexArray(0);
 
 	if (joint)
 	{
 		glm::vec3 current = joint->localA;
 
-		channels[3 + 3 * joint->id + DOF]->Draw(shaderProgram, MVP, DOF);
+		for (int i = 0; i < 3; i++)
+		{
+			glm::mat4 T = glm::translate(MVP, glm::vec3(0.0f, factor * float(1 - i), 0.0f));
+
+			// Now send these values to the shader program
+			glUniformMatrix4fv(uMVP, 1, GL_FALSE, &T[0][0]);
+
+			// Draw graph
+			glBindVertexArray(VAO_graph);
+			glUniform3f(uChannel, 1.0f, 1.0f, 1.0f);
+			glDrawArrays(GL_LINE_STRIP, 0, vertices_graph.size());
+			glBindVertexArray(0);
+
+			// Draw channel
+			channels[3 + 3 * joint->id + i]->Draw(shaderProgram, T, i);
+		}
 	}
-
-	// This will be used for marking the current position
-	//if (id >= 0)
-	//{
-	//	Joint* j = model->allJoints[id];
-	//	glm::vec3 current = j->localA;
-	//	//cout << current[0] << " " << current[1] << " " << current[2] << endl;
-
-	//	int chNum = 3 + 3 * id + mode;
-	//	channels[chNum]->Draw(shaderProgram, M, MVP, mode);
-	//}
-
 }

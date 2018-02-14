@@ -25,6 +25,7 @@ public:
 	void Precompute();
 	void ComputeTangents();
 	void ComputeHermite();
+	void DrawUpdate();
 	float Evaluate(float time);
 
 	void Draw(GLuint shaderProgram, glm::mat4 MVP, int DOF);

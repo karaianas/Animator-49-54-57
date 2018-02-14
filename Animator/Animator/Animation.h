@@ -29,7 +29,7 @@ public:
 	void SetRange(float start_, float end_);
 	void Play(Model* M, float delta);
 
-	void DisplayChannel(Joint* joint, GLuint shaderProgram, glm::mat4 MVP, int DOF);
+	void DisplayChannel(Joint* joint, GLuint shaderProgram, glm::mat4 MVP, float factor);
 
 	float start, end;
 	int numChannels;

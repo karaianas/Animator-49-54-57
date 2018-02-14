@@ -4,6 +4,12 @@ Channel::Channel(int expIn_, int expOut_)
 {
 	expIn = expIn_;
 	expOut = expOut_;
+
+	glGenVertexArrays(1, &VAO_inter);
+	glGenBuffers(1, &VBO_inter);
+
+	glGenVertexArrays(1, &VAO_key);
+	glGenBuffers(1, &VBO_key);
 }
 
 void Channel::AddKeyframe(float time, float value, int iRule, int oRule)
@@ -17,47 +23,7 @@ void Channel::Precompute()
 {
 	ComputeTangents();
 	ComputeHermite();
-
-	// Test zone
-	float scaleFactor = 5.f;
-	for (float t = -10.0f; t <= 10.0f; t += 0.1f)
-	{
-		vertices_inter.push_back(glm::vec2(t, Evaluate(t) * scaleFactor));
-		//cout << Evaluate(t) << endl;
-	}
-
-	for (auto key : keyframes)
-	{
-		vertices_key.push_back(glm::vec2(key->time, key->value * scaleFactor));
-	}
-
-	glGenVertexArrays(1, &VAO_inter);
-	glGenBuffers(1, &VBO_inter);
-
-	glBindVertexArray(VAO_inter);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO_inter);
-	glBufferData(GL_ARRAY_BUFFER, vertices_inter.size() * sizeof(glm::vec2), vertices_inter.data(), GL_STATIC_DRAW);
-
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (GLvoid*)0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
-
-	glGenVertexArrays(1, &VAO_key);
-	glGenBuffers(1, &VBO_key);
-
-	glBindVertexArray(VAO_key);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO_key);
-	glBufferData(GL_ARRAY_BUFFER, vertices_key.size() * sizeof(glm::vec2), vertices_key.data(), GL_STATIC_DRAW);
-
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (GLvoid*)0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+	DrawUpdate();
 }
 
 void Channel::ComputeTangents()
@@ -189,6 +155,42 @@ void Channel::ComputeHermite()
 	}
 }
 
+void Channel::DrawUpdate()
+{
+	// Test zone
+	for (float t = -10.0f; t <= 10.0f; t += 0.1f)
+	{
+		vertices_inter.push_back(glm::vec2(t, Evaluate(t)));
+	}
+
+	for (auto key : keyframes)
+	{
+		vertices_key.push_back(glm::vec2(key->time, key->value));
+	}
+
+	glBindVertexArray(VAO_inter);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO_inter);
+	glBufferData(GL_ARRAY_BUFFER, vertices_inter.size() * sizeof(glm::vec2), vertices_inter.data(), GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (GLvoid*)0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+
+	glBindVertexArray(VAO_key);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO_key);
+	glBufferData(GL_ARRAY_BUFFER, vertices_key.size() * sizeof(glm::vec2), vertices_key.data(), GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (GLvoid*)0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+}
+
 float Channel::Evaluate(float time)
 {
 	float start = keyframes.front()->time;
@@ -248,10 +250,10 @@ void Channel::Draw(GLuint shaderProgram, glm::mat4 MVP, int DOF)
 	// Now send these values to the shader program
 	glUniformMatrix4fv(uMVP, 1, GL_FALSE, &MVP[0][0]);
 
+	// lines: dotted
 	glm::vec3 color(0.0f);
 	color[DOF] = 1.0f;
 	glBindVertexArray(VAO_inter);
-	// lines: dotted
 	glUniform3f(uChannel, color[0], color[1], color[2]);
 	glDrawArrays(GL_LINE_STRIP, 0, vertices_inter.size());
 	glBindVertexArray(0);

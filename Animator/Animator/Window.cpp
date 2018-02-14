@@ -292,25 +292,15 @@ void Window::display_callback(GLFWwindow* window)
 	{
 
 		// bottom
+		glm::vec2 range(-10.0f, 10.0f);
+		float translateFactor = (range[1] - range[0]) / 3.0f;
+
 		glm::mat4 V_ = glm::lookAt(cam_pos2, cam_look_at2, cam_up2);
-		//glm::mat4 P_ = glm::perspective(45.0f, (float)width / (float)height, 0.1f, 100.0f);
-		glm::mat4 P_ = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.0f, 100.0f);
-		int deltaH = int(float(height) * 0.5f / 3.0f);
+		glm::mat4 P_ = glm::ortho(-11.0f, 11.0f, range[0], range[1], 0.0f, 100.0f);
 
-		// x
-		glViewport(0, deltaH * 2, width, deltaH);
+		glViewport(0, 0, width, height * 0.5);
 		glUseProgram(graphProgram);
-		A->DisplayChannel(selected, graphProgram, P_ * V_, 0);
-
-		// y
-		glViewport(0, deltaH, width, deltaH);
-		glUseProgram(graphProgram);
-		A->DisplayChannel(selected, graphProgram, P_ * V_, 1);
-
-		// z
-		glViewport(0, 0, width, deltaH);
-		glUseProgram(graphProgram);
-		A->DisplayChannel(selected, graphProgram, P_ * V_, 2);
+		A->DisplayChannel(selected, graphProgram, P_ * V_, translateFactor);
 
 		// left top
 		glViewport(0, height*0.5, width*0.5, height*0.5);
