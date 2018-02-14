@@ -4,6 +4,22 @@ using namespace std;
 
 Animation::Animation()
 {
+	for (int i = -10; i < 11; i++)
+		vertices_graph.push_back(glm::vec2(i, 0));
+
+	glGenVertexArrays(1, &VAO_graph);
+	glGenBuffers(1, &VBO_graph);
+
+	glBindVertexArray(VAO_graph);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO_graph);
+	glBufferData(GL_ARRAY_BUFFER, vertices_graph.size() * sizeof(glm::vec2), vertices_graph.data(), GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (GLvoid*)0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
 }
 
 void Animation::readAnim(const char * filepath)
@@ -156,17 +172,36 @@ void Animation::Play(Model* M, float delta)
 	}
 }
 
-void Animation::DisplayChannel(int mode, Model* model, int id, GLuint shaderProgram, glm::mat4 M, glm::mat4 MVP)
+void Animation::DisplayChannel(Joint* joint, GLuint shaderProgram, glm::mat4 MVP, int DOF)
 {
-	// This will be used for marking the current position
-	if (id >= 0)
-	{
-		Joint* j = model->allJoints[id];
-		glm::vec3 current = j->localA;
-		//cout << current[0] << " " << current[1] << " " << current[2] << endl;
+	GLuint uMVP = glGetUniformLocation(shaderProgram, "MVP");
+	GLuint uChannel = glGetUniformLocation(shaderProgram, "channel");
 
-		int chNum = 3 + 3 * id + mode;
-		channels[chNum]->Draw(shaderProgram, M, MVP, mode);
+	// Now send these values to the shader program
+	glUniformMatrix4fv(uMVP, 1, GL_FALSE, &MVP[0][0]);
+
+	// Draw graph
+	glBindVertexArray(VAO_graph);
+	glUniform3f(uChannel, 1.0f, 1.0f, 1.0f);
+	glDrawArrays(GL_LINE_STRIP, 0, vertices_graph.size());
+	glBindVertexArray(0);
+
+	if (joint)
+	{
+		glm::vec3 current = joint->localA;
+
+		channels[3 + 3 * joint->id + DOF]->Draw(shaderProgram, MVP, DOF);
 	}
+
+	// This will be used for marking the current position
+	//if (id >= 0)
+	//{
+	//	Joint* j = model->allJoints[id];
+	//	glm::vec3 current = j->localA;
+	//	//cout << current[0] << " " << current[1] << " " << current[2] << endl;
+
+	//	int chNum = 3 + 3 * id + mode;
+	//	channels[chNum]->Draw(shaderProgram, M, MVP, mode);
+	//}
 
 }

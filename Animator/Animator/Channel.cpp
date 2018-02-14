@@ -4,26 +4,6 @@ Channel::Channel(int expIn_, int expOut_)
 {
 	expIn = expIn_;
 	expOut = expOut_;
-
-	for (int i = -10; i < 11; i++)
-	{
-		vertices_graph.push_back(glm::vec2(i, 1));
-	}
-
-	glGenVertexArrays(1, &VAO_graph);
-	glGenBuffers(1, &VBO_graph);
-
-	glBindVertexArray(VAO_graph);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO_graph);
-	glBufferData(GL_ARRAY_BUFFER, vertices_graph.size() * sizeof(glm::vec2), vertices_graph.data(), GL_STATIC_DRAW);
-
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (GLvoid*)0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
-
 }
 
 void Channel::AddKeyframe(float time, float value, int iRule, int oRule)
@@ -260,22 +240,13 @@ float Channel::Evaluate(float time)
 	}
 }
 
-void Channel::Draw(GLuint shaderProgram, glm::mat4 M, glm::mat4 MVP, int DOF)
+void Channel::Draw(GLuint shaderProgram, glm::mat4 MVP, int DOF)
 {
 	GLuint uMVP = glGetUniformLocation(shaderProgram, "MVP");
-	GLuint uModel = glGetUniformLocation(shaderProgram, "model");
 	GLuint uChannel = glGetUniformLocation(shaderProgram, "channel");
 
 	// Now send these values to the shader program
 	glUniformMatrix4fv(uMVP, 1, GL_FALSE, &MVP[0][0]);
-	glUniformMatrix4fv(uModel, 1, GL_FALSE, &M[0][0]);
-
-	// Now draw. We simply need to bind the VAO associated with it.
-	glBindVertexArray(VAO_graph);
-	glUniform3f(uChannel, 1.0f, 1.0f, 1.0f);
-	glDrawArrays(GL_LINE_STRIP, 0, vertices_graph.size());
-	// Unbind the VAO when we're done so we don't accidentally draw extra stuff or tamper with its bound buffers
-	glBindVertexArray(0);
 
 	glm::vec3 color(0.0f);
 	color[DOF] = 1.0f;

@@ -290,36 +290,27 @@ void Window::display_callback(GLFWwindow* window)
 	// Viewport test
 	if (split)
 	{
-		/*
-		// left bottom
-		glViewport(0, 0, width*0.5, height*0.5);
-		draw();
-
-		// right bottom
-		glViewport(width*0.5, 0, width*0.5, height*0.5);
-		draw();
-		*/
 
 		// bottom
-		glm::mat4 I = glm::mat4(1.0f);
 		glm::mat4 V_ = glm::lookAt(cam_pos2, cam_look_at2, cam_up2);
-		glm::mat4 P_ = glm::perspective(45.0f, (float)width / (float)height, 0.1f, 100.0f);
-		//glm::mat4 P_ = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -10.0f, 10.0f);
+		//glm::mat4 P_ = glm::perspective(45.0f, (float)width / (float)height, 0.1f, 100.0f);
+		glm::mat4 P_ = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.0f, 100.0f);
 		int deltaH = int(float(height) * 0.5f / 3.0f);
+
 		// x
 		glViewport(0, deltaH * 2, width, deltaH);
 		glUseProgram(graphProgram);
-		A->DisplayChannel(0, M, selectedInd, graphProgram, I, P_ * V_ * I);
+		A->DisplayChannel(selected, graphProgram, P_ * V_, 0);
 
 		// y
 		glViewport(0, deltaH, width, deltaH);
 		glUseProgram(graphProgram);
-		A->DisplayChannel(1, M, selectedInd, graphProgram, I, P_ * V_ * I);
+		A->DisplayChannel(selected, graphProgram, P_ * V_, 1);
 
 		// z
 		glViewport(0, 0, width, deltaH);
 		glUseProgram(graphProgram);
-		A->DisplayChannel(2, M, selectedInd, graphProgram, I, P_ * V_ * I);
+		A->DisplayChannel(selected, graphProgram, P_ * V_, 2);
 
 		// left top
 		glViewport(0, height*0.5, width*0.5, height*0.5);
