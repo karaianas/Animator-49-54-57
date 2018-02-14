@@ -10,6 +10,7 @@ uniform mat4 itM;
 uniform mat4 model;
 uniform vec3 color;
 uniform vec2 light;
+//uniform vec2 light[2];
 uniform mat4 Bmatrices[50];
 
 //out vec3 P;

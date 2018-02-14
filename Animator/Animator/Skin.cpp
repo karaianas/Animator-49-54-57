@@ -106,6 +106,10 @@ void Skin::draw(GLuint shaderProgram)
 	glUniformMatrix4fv(uITM, 1, GL_FALSE, &ITM[0][0]);
 	glUniformMatrix4fv(uModel, 1, GL_FALSE, &worldM[0][0]);
 	glUniform2f(uLight, lightMode[0], lightMode[1]);
+	//vector<glm::vec2> L;
+	//L.push_back(lightMode);
+	//L.push_back(lightMode);
+	//glUniform2fv(uLight, 2, glm::value_ptr(L[0]));
 	glUniformMatrix4fv(uB, 50, GL_FALSE, glm::value_ptr(WBmatrices[0]));
 
 	glBindVertexArray(VAO);

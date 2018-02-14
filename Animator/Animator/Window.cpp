@@ -6,6 +6,11 @@ GLint skinProgram;
 
 Cube* point;
 Model* M;
+
+// Viewport
+bool split = false;
+
+// Animation
 Animation* A;
 float delta = 0.0f;
 
@@ -238,15 +243,8 @@ void Window::idle_callback()
 	}
 }
 
-void Window::display_callback(GLFWwindow* window)
+void Window::draw()
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	if (wireframe)
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	else
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
 	// Skeleton mode
 	if (mode == 0)
 	{
@@ -261,6 +259,66 @@ void Window::display_callback(GLFWwindow* window)
 	else
 	{
 	}
+
+	if (IKmode)
+	{
+		glUseProgram(shaderProgram);
+		//point->draw(shaderProgram, glm::mat4(1.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		glm::mat4 T = glm::translate(glm::mat4(1.0f), goal) * glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.1f));
+		point->draw(shaderProgram, T, glm::vec3(0.0f, 1.0f, 0.0f));
+	}
+}
+
+void Window::display_callback(GLFWwindow* window)
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	if (wireframe)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	else
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+	// Viewport test
+	if (split)
+	{
+		// left bottom
+		glViewport(0, 0, width*0.5, height*0.5);
+		draw();
+
+		// right bottom
+		glViewport(width*0.5, 0, width*0.5, height*0.5);
+		draw();
+
+		// left top
+		glViewport(0, height*0.5, width*0.5, height*0.5);
+		draw();
+
+		// right top
+		glViewport(width*0.5, height*0.5, width*0.5, height*0.5);
+		draw();
+
+		glViewport(0, 0, width, height); //restore default
+	}
+	else
+	{
+		draw();
+	}
+
+
+	//// Skeleton mode
+	//if (mode == 0)
+	//{
+	//	glUseProgram(shaderProgram);
+	//	M->draw(shaderProgram);
+	//}
+	//else if (mode == 1)
+	//{
+	//	glUseProgram(skinProgram);
+	//	M->skin->draw(skinProgram);
+	//}
+	//else
+	//{
+	//}
 
 
 	if (IKmode)
@@ -288,6 +346,15 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 		if (key == GLFW_KEY_0)
 		{
 			mainMenu();
+		}
+
+		// Viewport test
+		if (key == GLFW_KEY_V)
+		{
+			if (split)
+				split = false;
+			else
+				split = true;
 		}
 
 		// Animation test
